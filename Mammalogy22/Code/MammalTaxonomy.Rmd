@@ -1,0 +1,31 @@
+---
+title: "Mammal taxonomy"
+author: "Erika Barthelmess"
+date: "`r Sys.Date()`"
+output: html_document
+---
+## Pull in data from OSF so I don't have to store it on github
+
+```{r}
+rm(list=ls())
+#install.packages("httr")
+library(httr)
+library(here)
+source(here("Mammalogy22", "Code", "read_in_OSF.R"))
+```
+Add my OSF user name and pwd for authentication if in a private space (files I am not hosting publically)
+
+```{r}
+UserName <-"barthelmess@stlawu.edu"
+PW <-"bk6BGLjis2p5"
+```
+
+Need to find a way to hide these credentials from the code.
+
+
+Now try to pull the file using the function I wrote called  `read_in_OSF`
+
+```{r}
+mydata<-read_in_OSF('https://osf.io/ntxsa','msw3-all.csv',UserName, PW)
+```
+
