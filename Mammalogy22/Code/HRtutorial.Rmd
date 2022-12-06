@@ -1,0 +1,214 @@
+---
+title: "Using adehabitatHR, adehabitatLT and sp packages to measure animal home range"
+output: html_notebook
+---
+
+## Introduction
+Animal home ranges are the areas that animals use to carry out their normal day-to-day activities such as sleeping, feeding, and mating.  There at two general classes of home range estimators: *Minimum Convex Polygon* (MCP) and *Kernel Density Estimator* (KDE) home range estimates.  
+
+In the first part of this tutorial, we will examine how to load data and let R know what it needs to know about the data.
+
+In the second part we will calculate the MCP home ranges for Cape Buffalo in South Africa.
+
+In the third part we will calculate KDE home ranges for the same Cape Buffalo.
+
+In the final part, we will compare the MCP to KDE estimators to see the pros and cons of each.
+
+So, let's begin!
+
+## Part 1 - Prepping the R workspace and the data
+I like to begin any session in R with setting up a few features of the workspace and loading any packages that I will need.
+
+```{r}
+rm(list=ls()) #clear's the environment
+
+#now install pacman package to check on what packages that you need are already installed and install them if not
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(dplyr, adehabitatHR, adehabitatLT, sp, ggplot2, magrittr, maptools) #checks to see if packages are installed and installs them if not
+
+#now turn the packages on
+library(dplyr)
+library(tidyr)
+library(adehabitatHR)
+library(adehabitatLT)
+library(sp)
+library(rgdal)#won't load on rstudio server; used to apply datum, export .shp
+library(ggplot2)
+library(magrittr)
+library(maptools)
+library(tidyr)
+library(sf)
+library(here)
+```
+
+Ok, now that we've got stuff cleared, turned on, and ready to go, let's load some data.
+
+```{r}
+CapeBuffalo <- read.csv(here("Mammalogy18", "SpaceUse", "Data", "CapeBuffalo", "Kruger African Buffalo, GPS tracking, South Africa.csv"))
+```
+Now let's look at the data and see how they are organized
+```{r}
+structure(CapeBuffalo) #examines the structure of the dataset
+```
+Now let's plot the data
+
+In order to work with the home range data, we need first to subset just the location and animal identification information and then make sure R recognizes that the location data are spatial.
+```{r}
+plot(CapeBuffalo$'utm.easting', CapeBuffalo$'utm.northing', asp = 1)
+```
+
+```{r}
+#subset DF to get just animal name, X and Y coords
+
+Data<-CapeBuffalo %>% dplyr::select('utm.easting', 'utm.northing', `individual.local.identifier`)
+
+str(Data)
+```
+Now let's tell R that the utm coordinates represent spatial and not just numeric information.
+```{r}
+sp::coordinates(Data)<-Data[,c("utm.easting", "utm.northing")]
+
+```
+Ok! Our data are ready, so we can move on to Part 2!
+
+## Part 2 - Calculate the MCP home ranges for the buffalo.
+
+First, let's see how many buffalo are in our dataset by examining the 'individual.local.identifer (aka Name).  To do so, we need to change the names from character variables to factor variables.
+
+```{r}
+#change from character to factor
+Data$individual.local.identifier<-as.factor(Data$individual.local.identifier)
+
+#now see how many levels of the factor there are
+levels(Data$individual.local.identifier)
+```
+Looks like there are 6 buffalo in our data set.
+
+Second, we can calculate the MCP estimates for each buffalo.
+
+Often, when we estimate MCP or any other home range, we like to examine the home range size with a variety of the whole data set.
+
+```{r}
+
+mcp_est100<-mcp(Data[,3], percent=100, unin = "m", unout="km2") #100% of points used
+mcp_est90<-mcp(Data[,3], percent=90, unin= 'm', unout = 'km2')#90 % of points used
+mcp_est80<-mcp(Data[,3], percent=80, unin= 'm', unout = 'km2')#80% of points used
+mcp_est70<-mcp(Data[,3], percent=70, unin= 'm', unout = 'km2')#70% of points used
+
+#now plot the results
+
+plot(mcp_est100, col = 'purple')
+plot(mcp_est90, add = TRUE, col = 'green')
+plot(mcp_est80, add = T, col = 'red')
+plot(mcp_est70, add = T, col = 'blue')
+plot(Data, cex = 0.5, pch = 19, col = 'orange', add = T)
+```
+Now use the sf package to write the shapefiles. 
+
+```{r}
+sf::st_write(as(mcp_est100, "sf"), here("Mammalogy22", "Data", "Shapefiles", "MCP100.shp"))
+
+sf::st_write(as(mcp_est90, "sf"), here("Mammalogy22", "Data", "Shapefiles", "MCP90.shp"))
+
+sf::st_write(as(mcp_est80, "sf"), here("Mammalogy22", "Data", "Shapefiles", "MCP80.shp"))
+
+sf::st_write(as(mcp_est70, "sf"), here("Mammalogy22", "Data", "Shapefiles", "MCP70.shp"))
+
+```
+Now let's get the areas of the home ranges
+
+```{r}
+MCP_areas<-as.data.frame(mcp_est100)
+MCP_areas
+```
+The result is the size, in area by square kilometers since that is what was specified by "unout", of the home range for each of the 6 animals.
+
+## Part 3 - Calculate the KDE home ranges for the buffalo.
+
+Ok, now let's calculate the Kernel Density Estimator for each of the buffalo.  Remember that the 3rd column of Data has the buffalo names.
+```{r}
+kud<-kernelUD(Data[,3], h = 'href')
+kud
+image(kud)#displays the results
+```
+
+Now let's estimate the home range from the Utility Distribution
+
+```{r}
+homeranges<-getverticeshr(kud, unin = "m", unout="km2")
+class(homeranges)
+plot(homeranges, col = 1:6)
+```
+Now let's export the KDE home ranges as a shapefile
+```{r}
+#requires sf
+
+sf::st_write(as(homeranges, "sf"), here("Mammalogy22","Data", "Shapefiles","KDEhomeranges.shp"))
+
+```
+
+
+Now let's get the homerange areas
+```{r}
+KDE_areas<-as.data.frame(homeranges)
+KDE_areas
+```
+These areas are in square kilomters.
+
+
+
+
+
+## Part 4 - Compare the size of home ranges calculated by MCP and KDE
+
+Start by combining all the data into a single data frame
+
+```{r}
+HRS<-data.frame(MCP_areas$id, MCP_areas$area, KDE_areas$area)
+```
+Now fix the column names to avoid confusion
+```{r}
+colnames(HRS)<-c("Name", "MCP", "KDE")
+HRS
+```
+Now we need to re-arrange the data set so that there is a column called "Name", a column called "Type", and a column called "Area".  To do so, we'll use the package called **tidyr**
+
+```{r}
+library(tidyr)
+HRS_long<-tidyr::gather(HRS, Type, Area, MCP:KDE, factor_key =T)
+HRS_long
+```
+We did that to make it easer to plot the data.  Now let's make a plot!
+
+```{r}
+ggplot(HRS_long, aes(Name, Area, fill = Type))+
+   geom_col(stat = identity, position = 'dodge')
+ggsave("MCPvsKDE.png", device = "png")
+```
+Can we make any generalizations about MCP vs. KDE estimates based on these results?
+
+## Part 5 - Mapping the data on an interesting background
+Though we can see the data in the drawings above, it would be nice to see them displayed relative to some meaningful background.  
+
+The first step is to convert the polygon shapefiles into a dataframe and just plot them:
+
+```{r}
+MCPs<-fortify(mcp_est100)
+g<-ggplot(MCPs, aes(x = long, y = lat, fill = id, group = group))+
+   geom_polygon((alpha = 0.4)+
+                   ggthemes::scale_fill_gdocs()+
+                   coord_equal()+
+                   theme_void())
+g
+g+facet_wrap(~id)
+```
+
+Next, we will export the MCP polygons and KDE polygons as shapefile (.shp) to use in ArcGIS
+
+
+```{r}
+writeSpatialShape(MCPs,BuffaloMCPs, factor2char = T )
+
+```
+
+

@@ -1,0 +1,19 @@
+Team_members,Trial_number,N_hat,Std_error_N_hat,N,M,n,m
+Willow & Johs,1,18,7,25,8,6,2
+Willow & Johs,2,22,4,25,6,10,2
+Willow & Johs,3,30,16,25,5,5,0
+Olivia and Peter,1,22,7.5,25,10,8,3
+Olivia and Peter,2,30,12.25,25,10,8,2
+Olivia and Peter,3,13,3.49,25,9,5,3
+Vaughn & Molly,1,18,±1,25,9,7,3
+Vaughn & Molly,2,14,±1,25,6,6,2
+Vaughn & Molly,3,21,±1,25,7,8,2
+Taylor & Peyton,1,14,7,25,4,6,1
+Taylor & Peyton,2,6,2,25,3,5,2
+Taylor & Peyton,3,9,2,25,6,5,3
+Cassidy & Evelyn,1,25,±32,25,5,4,0
+Cassidy & Evelyn,2,18,±5,25,10,6,3
+Cassidy & Evelyn,3,11,±5,25,3,6,1
+"kelsey,jordan",1,23,10,25,9,4,1
+"kelsey,jordan",2,13,3,25,9,6,4
+"kelsey,jordan",3,13,3,25,10,7,5

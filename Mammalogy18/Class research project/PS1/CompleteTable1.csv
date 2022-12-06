@@ -1,0 +1,13 @@
+,Habitat,Measurement,meanVal1,semVal1,,,Bare,,Bryophytes,,Vascular,,Litter Depth,
+1,Deciduous,Bare,33.85,1.65,,Habitat,Mean,SEM,Mean,SEM,Mean,SEM,Mean,SEM
+2,Deciduous,Bryophytes,48.2,2.6,,Deciduous,33.85,1.65,48.20,2.60,17.95,4.25,5.56,0.66
+3,Deciduous,Litter Depth,5.561111111,0.661111111,,Hemlock,65.05,9.05,21.00,1.00,13.95,10.05,2.15,0.45
+4,Deciduous,Vascular,17.95,4.25,,Pine,71.75,2.25,3.25,1.25,25.00,3.50,3.55,0.25
+5,Hemlock,Bare,65.05,9.05,,,,,,,,,,
+6,Hemlock,Bryophytes,21,1,,,,,,,,,,
+7,Hemlock,Litter Depth,2.15,0.45,,,,,,,,,,
+8,Hemlock,Vascular,13.95,10.05,,,,,,,,,,
+9,Pine,Bare,71.75,2.25,,,,,,,,,,
+10,Pine,Bryophytes,3.25,1.25,,,,,,,,,,
+11,Pine,Litter Depth,3.55,0.25,,,,,,,,,,
+12,Pine,Vascular,25,3.5,,,,,,,,,,

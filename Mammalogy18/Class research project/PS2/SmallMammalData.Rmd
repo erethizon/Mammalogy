@@ -1,0 +1,78 @@
+---
+title: "Small Mammal Data"
+output: html_notebook
+---
+
+###Introduction
+This is the R code I am using to do the work for Mammalogy 2018 problem Set 2 analyzing the trapping data, which includes data from 2016 and 2018
+
+####Step 1
+Begin by setting up the workspace and loading data
+```{r}
+rm(list = ls())
+library(dplyr)
+library(ggplot2)
+library(readr)
+
+DF <- read_csv("Kip_trapping_data.csv")
+DF1<-read.csv("Kip_Trapping_Data1.csv")
+```
+####Step 2 
+Next, check the data for errors before moving to analysis
+
+```{r}
+#view structure
+str(DF)
+```
+Much of these data we don't need, and will ignore.  However, it would be helpful if some of the data were converted to factors.  I did not ask the students to break the data down by year, so we don't need to mess with the data variable, either.
+```{r}
+#convert to factors
+DF1$Habitat<-as.factor(DF1$Habitat)
+DF1$Transect<-as.factor(DF1$Transect)
+DF1$Species<-as.factor(DF1$Species)
+str(DF1)
+```
+Great!  Now let's see how many levels there are for each of these variables. Just focus on the variable we will be using in our analysis.
+
+```{r}
+Habitats<-levels(DF1$Habitat)
+Transects<-levels(DF1$Transect)
+Species<-levels(DF1$Species)
+Habitats
+Transects
+Species
+```
+Ok - looks like the levels of the factors are correct and don't need tweaking.  So now we can move on to analysis.
+####Step 3
+Now start working on the work required in problem set 2.  This code will be reusable for when we analyze the game camera data and the game camera data plus the trapping data.
+
+#####1.	Descriptive analysis
+In the first question, I asked students to create a table, including a complete table heading, that describes the species of mammal found on the Kip Tract in total and on each of the sub-habitats.  Include in your table the number trapped for each species in each habitat and in total.
+
+We can't do all of this with only the trapping data, but can get all of the trapping data level of analysis completed.
+
+First, how many total species and what are they?
+```{r}
+Species<-levels(DF$Species)
+SpeciesNum<-n_distinct(DF$Species)
+```
+Now let's determine the count for each species by habitat type
+```{r}
+SumSmallSpecies<-DF %>% group_by(Species, Habitat, Transect) %>% summarize(
+	NumSpecies=n_distinct(Species)
+)
+```
+
+
+#####2.	Species Richness
+a.	What is species richness of mammals on the Kip Tract altogether (without considering sub-habitats)?
+b.	What is the mean species richness ( SEM) in each habitat?
+
+#####3.	Simpson's index
+a.	What is the Simpson's index of mammals on the Kip Tract altogether (without considering sub-habitats)?
+b.	What is the mean Simpson's index ( SEM) in each habitat?
+
+#####4.	Hypothesis testing
+a.	Test the hypothesis that the mean Species richness is different among the three forest habitats.  (Hint: What is your number of replicates for each habitat?)
+b.	Test the hypothesis that the mean Simpson's index is different among the three forest habitats.  (Hint: What is your number of replicates for each habitat?)
+

@@ -1,0 +1,26 @@
+---
+title: "Domestication figure"
+output: html_notebook
+---
+
+I'm working on a figure to replicate figure 29.1 in Feldhamer's Mammalogy text, 4th edition, on the time and place of dometication for several mammals
+
+
+```{r}
+#let's make some data
+yrsago<-c(13000, 10000, 9000, 8750,8000, 8000, 7750, 5000, 5000, 4000, 4000, 3500, 2500, 2500, 2400, 2400,1500, 1100, 600, 70, 40)
+
+taxon<-c("Domestic dog", "Goat", "Domestic pig", "Sheep", "Cattle", "Zebu cattle", "Domestic cat", "Guinea pig", "Donkey", "Water buffalo", "Dromedary", "Horse", "Yak", "Bactrian camel", "Llama", "Alpaca",  "Ferret",  "Domestic rabbit", "Lab mouse", "Domestic red fox", "Domestic hedgehog")
+
+ancestor<-c("Wolf", "Bezoar ibex", "Anatolian boar", "Unknown","Eurasian aurochs", "Indian aurochs", "African wild cat", "Montane guinea pig", "Nubian wild ass", "Wild water buffalo", "Thomas' camel", "Wild horse", "Bactrian camel", "Guanco", "Vicuna", "Polecat", "Wild rabbit", "House mouse", "Red fox", "Four-toed hedgehog")
+
+region<-c("Europe & Asia", "Iran", "W Asia & China", "Anatolia", "W Asia", "India", "W Asia", "Peru", "Donkey", "India, China, Philippines", "Arabia", "Kazakhastan", "Tibet & Nepal", "C Asia", "Peru & Bolivia", "Peru & Bolivia", "Europe", "Europe", "China & C Europe", "Russia", "C & E Africa")
+
+#data from wikipedia
+```
+
+Now make a data frame
+```{r}
+Domestics<-cbind(taxon, ancestor, yrsago, region)
+```
+

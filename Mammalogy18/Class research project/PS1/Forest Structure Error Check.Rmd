@@ -1,0 +1,178 @@
+---
+title: "Forest structure 1: Mammalogy 2018"
+author: "Erika"
+date: "10/31/2018"
+output: html_document
+---
+## Introduction
+This is the first level of analysis for the forest structure we collected in mammalogy on two transects of deciduous, two transects of hemlock, and two transects of pine forest.  I asked students in the class to "error check" the data prior to analysis.  Their data is available in an excel spreadsheet called _Transect_Data_formatted.xlsx_ 
+
+I exported the two worksheets from the spreadsheet, one called Trees and the other called Ground as .csv files to use here in R.
+
+## Step 1: Prepare to work
+Clear R's workspace to avoid problems carrying over from other work and ad all of the packages you will need.
+```{r}
+rm(list = ls()) #clear R's workspace (the "environment")
+library(dplyr) #turn on dplyr for working with data
+library(ggplot2) #turn on ggplot for plotting data
+```
+## Step 2: Load the data
+We have two data sets to "proof" for problems; one deals with tree data and the other with ground cover data.  Let's load them as two separate data frames.
+
+```{r}
+library(readr)
+Trees <- read_csv("Trees.csv")
+Ground <- read_csv("Ground.csv")
+```
+## Step 3: Process data for outliers, etc.
+Now that we have the data, we need to look at it and clean it up.  This is the assignment that students working on in lab on 31 Oct 2018.
+
+### Tree Data
+We'll start with the tree data set, and begin by examining the data frame
+```{r}
+str(Trees)
+#summary(Trees)
+```
+From this I can see that a number of variables that appear as character should actually be factors.  Let's fix that.
+```{r}
+Trees$Habitat<-as.factor(Trees$Habitat)
+Trees$`Trap Station`<-as.factor(Trees$`Trap Station`)
+Trees$Tree<-as.factor(Trees$Tree)
+Trees$Species<-as.factor(Trees$Species)
+
+```
+Great!  Now let's see how many levels there are for each of these variables. Just focus on the variable we will be using in our analysis.
+
+```{r}
+Habitats<-levels(Trees$Habitat)
+Tree_type<-levels(Trees$Tree)
+Tree_species<-levels(Trees$Species)
+Habitats
+Tree_type
+Tree_species
+```
+I can see that the levels are correct for both Habitats and Tree_type, so they don't need adjusting.  For Tree_species, red maple shows up as "Red Maple", "Red maple", and "red maple"; those need to be combined into the same leve. Likewise, white pine is entered as "white pine" and "White pine", and cedar is entered as "cedar" and "Cedar".  These all need to be repaired.  Let's do that now:
+```{r}
+#figure out which rows have red maple
+Nums<-which(Trees$Species =="RED MAPLE"|Trees$Species=="red maple"|Trees$Species == "Red Maple")
+
+#now change those rows to "Red maple" so that all are the same
+Trees$Species[Nums]<-"Red maple"
+#this worked; sometimes the levels aren't correctly recorded
+levels(Trees$Species)# you can see that it still has the levels wrong
+Trees$Species<-factor(Trees$Species) #resets the factor levels
+levels(Trees$Species)
+
+```
+Now I need to do the same for white pine, and for cedar (code is explained in code block above):
+```{r}
+#figure out which rows have cedar
+Nums<-which(Trees$Species =="cedar")
+Trees$Species[Nums]<-"Cedar"
+Trees$Species<-factor(Trees$Species) #resets the factor levels
+Nums<-which(Trees$Species =="white pine")
+Trees$Species[Nums] <- "White pine"
+Trees$Species<-factor(Trees$Species) #resets the factor levels
+levels(Trees$Species)
+length(levels(Trees$Species))
+```
+This gets the data set down to only 17 different species.  
+
+A visual inspection of the data shows me that there are two dead trees, as indicated in the comments field.  Since the terms don't match in each comment, it would be nice if I could select rows based on including the word "dead" in the comments. These trees will be removed from the data set.
+
+Let's give it a try:
+```{r}
+MyVal<-grep("dead",Trees$Comments)#identifies the rows with "dead" in the comments
+#now delete the rows
+Trees<-Trees[-c(MyVal),] #Great!
+```
+At this point, we have corrected naming problems in the data and have deleted the rows with dead trees.  Now let's get to the next step: checking for outliers.
+
+Now let's plot some data to get an idea of how things are looking.
+1. DBH
+```{r}
+ggplot(Trees, aes(Trees$DBH))+
+geom_histogram()
+```
+There is a very large value for DBH (85.6, and it appears twice). Though large it is for a white pine which can grow very large.  I'm leaving both values in, though this is probably a typo.
+
+2. Distance
+```{r}
+ggplot(Trees, aes(Trees$Distance))+
+geom_histogram()
+```
+There is a distance outlier at 27.2 meters.  Given that the trap stations are only 15 m apart, it is very unlikely that this is a correct measure, so we'll drop it from the data set.
+
+```{r}
+Dump<-which(Trees$Distance >= 20)
+Trees$Distance[Dump]<-NA
+```
+Great!  Now the Tree Data Set is ready to go!
+
+### Ground Data
+Now we'll follow similar steps with the ground data to error check it before use.
+
+```{r}
+str(Ground)
+```
+Looks again like we need to change some character variables to factors and check levels
+```{r}
+Ground$Habitat<-as.factor(Ground$Habitat)
+Ground$Measurement<-as.factor(Ground$Measurement)
+```
+I didn't bother with team members or veg quad since I won't be using them.
+
+Check levels
+```{r}
+levels(Ground$Habitat)
+```
+Looks good.
+```{r}
+levels(Ground$Measurement)
+```
+Also looks good.
+
+Now check comments field.
+Keep the 2 dead trees because they are just indicating the site, not anything about ground cover.
+
+Looks like some data may be in mm, some cm, and possibly inches? Or is this just that some are percents?  Let's take a look. 
+```{r}
+Litter<-filter(Ground, Measurement =="Litter Depth")
+```
+Now make a plot
+```{r}
+ggplot(Litter, aes(Value))+
+	geom_histogram()
+```
+Looks ok.  Let's do the same for the others
+```{r}
+Bryo<-filter(Ground, Measurement == "Bryophytes")
+ggplot(Bryo, aes(Value))+
+	geom_histogram()
+```
+No values greater than 100, so good.
+```{r}
+Bare<-filter(Ground, Measurement == "Bare")
+ggplot(Bare, aes(Value))+
+	geom_histogram()
+```
+Looks good!
+
+And now vascular plants
+```{r}
+Vasc<-filter(Ground, Measurement == "Vascular")
+ggplot(Vasc, aes(Value))+
+	geom_histogram()
+```
+Also looks ok.
+
+Now let's save these cleaned data frames to use with next steps of analysis.
+```{r}
+write.csv(Trees, "newtrees.csv")
+write.csv(Ground, "newground.csv")
+```
+This ends the error checking step.  Go to a new markdown document for processing.
+
+
+
+

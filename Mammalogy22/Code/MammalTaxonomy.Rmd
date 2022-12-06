@@ -9,6 +9,7 @@ output: html_document
 ```{r}
 rm(list=ls())
 #install.packages("httr")
+library(tidyverse)
 library(httr)
 library(here)
 source(here("Mammalogy22", "Code", "read_in_OSF.R"))
@@ -27,5 +28,14 @@ Now try to pull the file using the function I wrote called  `read_in_OSF`
 
 ```{r}
 mydata<-read_in_OSF('https://osf.io/ntxsa','msw3-all.csv',UserName, PW)
+```
+Now let's try to get some summary stats
+
+```{r}
+Orders<-length(unique(mydata$Order))
+                          
+                          
+                          
+                          mammals<-mydata %>% group_by(Order, Family, Genus, Species) %>% summarise(num_sp = length(Species))
 ```
 

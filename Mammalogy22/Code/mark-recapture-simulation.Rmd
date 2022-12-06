@@ -1,0 +1,22 @@
+---
+title: "Mark - recapture simulation"
+output: html_notebook
+---
+
+This is the R file for visualizing the data from the class exercise on mark-recapture. Students working in teams of two simulated mark-recapture in "known" populations of colored beads (N = 25).
+
+The data are located in a google sheet located at: https://docs.google.com/spreadsheets/d/1SK5UtCpa2gXs3lZKWW4ZBNXTYkGTe07_4ZSZLOBDWeU/edit#gid=0
+
+Set things up
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+#library(googlesheets4)#Jenny Bryan package for getting data from google sheets
+```
+Now import the data
+
+```{r}
+Mark <-read.csv(here("Mammalogy22", "Data", "Mark-Recapture Data - Data.csv"))
+```
+

@@ -1,0 +1,598 @@
+---
+title: 'Mammal Diversity: Mammalogy 2018'
+author: "Erika"
+date: "12/04/2018"
+output: html_document
+---
+## Introduction
+The students in Mammalogy are working on analyzing their mammal trapping data (including game camera data) for their final report.  Here is the work that needs to take place.
+
+This work requires two files, one called "Kip_trapping_data.csv" and the other called "SpeciesByTransect"
+
+## Set up the workspace
+Set some basic parameters 
+```{r}
+rm(list =ls()) #clear's R workspace
+library(dplyr)
+library(ggplot2)
+library(readr)
+```
+
+###Step 1. Mammal diversity
+Students are asked to calculate average species richness and average Simpson's index for each habitat, using each of the 2 transects within each habitat as a replicate. They are also to provide the standard error of the mean.
+
+#### Load some data
+Load the new tree data
+```{r}
+Small <- read_csv("Kip_trapping_data.csv")
+Camera<-read_csv("SpeciesByTransect")
+```
+Now clean up some of the small mammal data by getting rid of columns I don't want to see
+
+```{r}
+Wrong<-c(12:17)
+Small<-Small[,-Wrong]
+```
+Now summarize the small mammal data for ease of use
+
+```{r}
+Small_spec_by_trans<-Small %>% group_by(Habitat, Transect, Species) %>% summarize(
+	number = length(Species),
+)
+Small_by_habitat<-Small %>% group_by(Habitat, Species) %>% summarize(
+	number = length(Species)
+)
+write.csv(Small_spec_by_trans, "smallmammalresults.csv")
+```
+Now my 2 summary data frames are about the same.  Let's get them formatted correctly
+
+```{r}
+Camera<-Camera[,-1]
+#now change column names
+colnames(Camera)<-c("Habitat", "Transect", "Species","Number")
+colnames(Small_spec_by_trans)<-c("Habitat", "Transect", "Species","Number")
+```
+Now for compatibility I need to change the species names in Camera to match those in Small...
+
+```{r}
+small_species<-as.factor(Small_spec_by_trans$Species)
+camera_species<-as.factor(Camera$Species)
+#now get rid of non-mammals in Camera
+#"BLUEJAY"          "CROWORRAVEN"      "DEERWHITETAILED"  "HUMAN"           
+#[5] "MOLE"             "OPOSSUM"          "OTHERBIRD"        "OTHERSMALLMAMMAL"
+# [9] "PORCUPINE"        "RACCOON"          "SQUIRRELFLYING"   "SQUIRRELGRAY"    
+#[13] "SQUIRRELRED"      "TURKEY"           "WEASEL"          
+notamammal<-c("BLUEJAY","CROWORRAVEN", "OTHERBIRD", "TURKEY")
+```
+Now select the species that are not mammals
+```{r}
+nonmammals<-which(Camera$Species =="BLUEJAY"|Camera$Species =="CROWORRAVEN"|Camera$Species =="OTHERBIRD"|Camera$Species =="TURKEY")
+```
+Now remove them from the dataframe
+```{r}
+Mammals<-Camera[-nonmammals,]
+```
+
+Now change species names
+
+```{r}
+Possums<-which(Mammals$Species =="OPOSSUM")
+Mammals$Species[Possums]<-"Didelphis virginiana"
+Humans<-which(Mammals$Species == "HUMAN")
+#this worked; sometimes the levels aren't correctly recorded
+Mammals$Species[Humans]<-"Homo sapiens"
+Deer<-which(Mammals$Species =="DEERWHITETAILED")
+Mammals$Species[Deer]<-"Odocoileus virginianus"
+Mole<-which(Mammals$Species == "MOLE")
+Mammals$Species[Mole]<- "Talpid"
+Other<-which(Mammals$Species == "OTHERSMALLMAMMAL")
+Mammals$Species[Other]<-"Other small mammal"
+Porkies<-which(Mammals$Species =="PORCUPINE")
+Mammals$Species[Porkies]<-"Erethizon dorsatum"
+Raccoon<-which(Mammals$Species =="RACCOON")
+Mammals$Species[Raccoon]<-"Procyon lotor"
+Volans<-which(Mammals$Species =="SQUIRRELFLYING")
+Mammals$Species[Volans]<-"Glaucomys volans"
+grays<-which(Mammals$Species =="SQUIRRELGRAY")
+Mammals$Species[grays]<-"Sciurus carolinensis"
+reds<-which(Mammals$Species =="SQUIRRELRED")
+Mammals$Species[reds]<-"Tamiasciurus hudsonicus"
+Mustela<-which(Mammals$Species =="WEASEL")
+Mammals$Species[Mustela]<-"Mustela sp."
+```
+Now the two df's match in structure.  I think we can now bind them together.
+
+```{r}
+Mammals$Number<-as.integer(Mammals$Number)
+Mammals<-as.data.frame(Mammals)
+Small_spec_by_trans<-as.data.frame(Small_spec_by_trans)
+AllData<-rbind(Mammals,Small_spec_by_trans)
+```
+Now rename some things and clean things up
+```{r}
+rm(Small)
+rm(Camera)
+Small<-Small_spec_by_trans
+rm(Small_spec_by_trans)
+```
+#### Summary analysis
+1. Create a table, including a complete table heading, that describes the species of mammal found in the Kip Tract in total and on each of the sub-habitats. Include in your table the number trapped for each species in each habitat and in total
+
+#####Small mammal data first
+```{r}
+SmallTab1<-Small%>%group_by(Habitat, Species) %>% summarise(
+	total=sum(Number, na.rm = T)
+)
+
+SmallTotal<-SmallTab1 %>% group_by(Species) %>% summarise(
+	tot = sum(total)
+)
+```
+#####Game camera data
+```{r}
+GameTab1<-Mammals%>%group_by(Habitat, Species) %>% summarise(
+	total=sum(Number, na.rm = T)
+)
+
+GameTotal<-GameTab1 %>% group_by(Species) %>% summarise(
+	tot = sum(total)
+)
+```
+#####All data
+```{r}
+
+AllTab1<-AllData%>%group_by(Habitat, Species) %>% summarise(
+	total=sum(Number, na.rm = T)
+)
+
+AllTotal<-AllTab1 %>% group_by(Species) %>% summarise(
+	tot = sum(total)
+)
+```
+
+#### Species Richness
+2a.What is species richness of mammals on the Kip Tract altogether without considering sub-habitats? 
+2b. What is the mean species richness with SEM in each habitat?
+#####Small mammals 
+```{r}
+#2a.
+SRall<-n_distinct(SmallTab1$Species)#species richness of all small mammals
+#what are those species?
+SpeciesSmall<-levels(SmallTab1$Species)
+#2b.
+SRbyHabSmall<-Small %>% group_by(Habitat, Transect) %>% summarise(
+	SR = n_distinct(Species)
+)
+#now get mean, sd
+SRdetailsSmall<-SRbyHabSmall%>% group_by(Habitat) %>% summarise(
+	meanSR = mean(SR, na.rm = T),
+	semSR = sd(SR, na.rm = T)/sqrt(sum(!is.na(SR)))
+)
+```
+#####Game cameras
+```{r}
+#2a.
+SRall<-n_distinct(GameTab1$Species)#species richness of all small mammals
+#what are those species?
+SpeciesGame<-levels(GameTab1$Species)
+#2b.
+SRbyHabGame<-Mammals %>% group_by(Habitat, Transect) %>% summarise(
+	SR = n_distinct(Species)
+)
+#now get mean, sd
+SRdetailsGame<-SRbyHabGame%>% group_by(Habitat) %>% summarise(
+	meanSR = mean(SR, na.rm = T),
+	semSR = sd(SR, na.rm = T)/sqrt(sum(!is.na(SR)))
+)
+#now save summary
+
+write.csv(SRbyHabGame, "GameCamSRsummary.csv")
+```
+
+#####All data
+```{r}
+#2a.
+SRall<-n_distinct(AllTab1$Species)#species richness of all small mammals
+#what are those species?
+SpeciesAll<-levels(AllTab1$Species)
+#2b.
+SRbyHabAll<-AllData %>% group_by(Habitat, Transect) %>% summarise(
+	SR = n_distinct(Species)
+)
+#now get mean, sd
+SRdetailsAll<-SRbyHabAll%>% group_by(Habitat) %>% summarise(
+	meanSR = mean(SR, na.rm = T),
+	semSR = sd(SR, na.rm = T)/sqrt(sum(!is.na(SR)))
+)
+#write file
+write.csv(SRbyHabAll, "AllMammSR.csv")
+```
+
+
+This information completes questions 1 and 2 on the second problem set.
+
+#### Simpson's index
+Let's calculate Simpson's index for our three datasets
+
+#####Small mammals
+First calculate without assuming habitat differences
+
+```{r}
+#Set up a table to receive all the information from the 3 groups:
+
+NoHabs<-data.frame(matrix(ncol = 2, nrow = 3))
+colnames(NoHabs)<-c("Group", "Simpson")
+```
+Now work on small mammals
+```{r}
+SMs<-Small%>% group_by(Species) %>% summarise(
+	Total = sum(Number)
+)
+
+AllCritters<-sum(SMs$Total) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+SMs$intermediate<- ((SMs$Total)*(SMs$Total-1))/denom
+Simpson<-sum(SMs$intermediate)
+Group<-"Small mammals"
+
+NoHabs$Group[1]<-Group
+NoHabs$Simpson[1]<-Simpson
+
+```
+
+Begin by getting a separate dataset for each transect
+
+```{r}
+P1<-filter(Small, Habitat == "Pine" & Transect == 1)
+P2<-filter(Small, Habitat == "Pine" & Transect == 2)
+D1<-filter(Small, Habitat == "Deciduous" & Transect == 1)
+D2<-filter(Small, Habitat == "Deciduous" & Transect == 2)
+H1<-filter(Small, Habitat == "Hemlock" & Transect == 1)
+H2<-filter(Small, Habitat == "Hemlock" & Transect == 2)
+```
+
+Could we have done that more easily w/dplyr?
+```{r}
+SumSmall<-Small %>% group_by(Habitat, Transect) %>% 
+	summarize (
+		NumIndividuals=length(Species),
+		NumSpecies=n_distinct(Species)
+	)
+```
+Now calculate Simpson's index using formula in the analysis guide.
+First set up a DF to receive the results
+```{r}
+Table1<-data.frame(matrix(ncol = 3, nrow = 6))
+colnames(Table1)<-c("Habitat", "Transect", "Simpson")
+```
+Start with Deciduous
+```{r}
+#Deciduous 1
+AllCritters<-sum(D1$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+D1$intermediate<- ((D1$Number)*(D1$Number-1))/denom
+Simpson<-sum(D1$intermediate)
+Table1$Habitat[1]<-"Deciduous"
+Table1$Transect[1]<-1
+Table1$Simpson[1]<-Simpson
+
+
+#Deciduous 2
+AllCritters<-sum(D2$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+D2$intermediate<- ((D2$Number)*(D2$Number-1))/denom
+Simpson<-sum(D2$intermediate)
+Table1$Habitat[2]<-"Deciduous"
+Table1$Transect[2]<-2
+Table1$Simpson[2]<-Simpson
+```
+Now Hemlock
+```{r}
+#Hemlock 1
+AllCritters<-sum(H1$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+H1$intermediate<- ((H1$Number)*(H1$Number-1))/denom
+Simpson<-sum(H1$intermediate)
+Table1$Habitat[3]<-"Hemlock"
+Table1$Transect[3]<-1
+Table1$Simpson[3]<-Simpson
+
+
+#Hemlock 2
+AllCritters<-sum(H2$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+H2$intermediate<- ((H2$Number)*(H2$Number-1))/denom
+Simpson<-sum(H2$intermediate)
+Table1$Habitat[4]<-"Hemlock"
+Table1$Transect[4]<-2
+Table1$Simpson[4]<-Simpson
+```
+
+And now Pine
+```{r}
+#Pine 1
+AllCritters<-sum(P1$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+P1$intermediate<- ((P1$Number)*(P1$Number-1))/denom
+Simpson<-sum(P1$intermediate)
+Table1$Habitat[5]<-"Pine"
+Table1$Transect[5]<-1
+Table1$Simpson[5]<-Simpson
+
+
+#Pine 2
+AllCritters<-sum(P2$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+P2$intermediate<- ((P2$Number)*(P2$Number-1))/denom
+Simpson<-sum(P2$intermediate)
+Table1$Habitat[6]<-"Pine"
+Table1$Transect[6]<-2
+Table1$Simpson[6]<-Simpson
+```
+Now save result
+```{r}
+write.csv(Table1, "smallMammalSimpsons.csv")
+```
+
+Just need to average for each transect now.
+```{r}
+Tab1Simpson<-Table1 %>% group_by(Habitat) %>% summarize(
+			meanSimp = mean(Simpson, na.rm = T), 
+			sem_Simp=sd(Simpson)/sqrt(sum(!is.na(Simpson)))
+) 
+write.csv(Tab1Simpson, "small_mammal_simp_summary.csv")
+```
+
+Now can I loop through this somehow to make it faster?  I'll figure this out later, when I'm not trying to get the key...
+
+#####Game camera data
+Now work on game camera data
+
+```{r}
+GCs<-Mammals%>% group_by(Species) %>% summarise(
+	Total = sum(Number)
+)
+
+AllCritters<-sum(GCs$Total) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+GCs$intermediate<- ((GCs$Total)*(GCs$Total-1))/denom
+Simpson<-sum(GCs$intermediate)
+Group<-"Camera"
+
+NoHabs$Group[2]<-Group
+NoHabs$Simpson[2]<-Simpson
+```
+
+
+Begin by getting a separate dataset for each transect
+
+```{r}
+P1<-filter(Mammals, Habitat == "Pine" & Transect == 1)
+P2<-filter(Mammals, Habitat == "Pine" & Transect == 2)
+D1<-filter(Mammals, Habitat == "Deciduous" & Transect == 1)
+D2<-filter(Mammals, Habitat == "Deciduous" & Transect == 2)
+H1<-filter(Mammals, Habitat == "Hemlock" & Transect == 1)
+H2<-filter(Mammals, Habitat == "Hemlock" & Transect == 2)
+```
+
+Now calculate Simpson's index using formula in the analysis guide.
+First set up a DF to receive the results
+```{r}
+Table2<-data.frame(matrix(ncol = 3, nrow = 6))
+colnames(Table2)<-c("Habitat", "Transect", "Simpson")
+```
+Start with Deciduous
+```{r}
+#Deciduous 1
+AllCritters<-sum(D1$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+D1$intermediate<- ((D1$Number)*(D1$Number-1))/denom
+Simpson<-sum(D1$intermediate)
+Table2$Habitat[1]<-"Deciduous"
+Table2$Transect[1]<-1
+Table2$Simpson[1]<-Simpson
+
+
+#Deciduous 2
+AllCritters<-sum(D2$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+D2$intermediate<- ((D2$Number)*(D2$Number-1))/denom
+Simpson<-sum(D2$intermediate)
+Table2$Habitat[2]<-"Deciduous"
+Table2$Transect[2]<-2
+Table2$Simpson[2]<-Simpson
+```
+Now Hemlock
+```{r}
+#Hemlock 1
+AllCritters<-sum(H1$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+H1$intermediate<- ((H1$Number)*(H1$Number-1))/denom
+Simpson<-sum(H1$intermediate)
+Table2$Habitat[3]<-"Hemlock"
+Table2$Transect[3]<-1
+Table2$Simpson[3]<-Simpson
+
+
+#Hemlock 2
+AllCritters<-sum(H2$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+H2$intermediate<- ((H2$Number)*(H2$Number-1))/denom
+Simpson<-sum(H2$intermediate)
+Table2$Habitat[4]<-"Hemlock"
+Table2$Transect[4]<-2
+Table2$Simpson[4]<-Simpson
+```
+
+And now Pine
+```{r}
+#Pine 1
+AllCritters<-sum(P1$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+P1$intermediate<- ((P1$Number)*(P1$Number-1))/denom
+Simpson<-sum(P1$intermediate)
+Table2$Habitat[5]<-"Pine"
+Table2$Transect[5]<-1
+Table2$Simpson[5]<-Simpson
+
+
+#Pine 2
+AllCritters<-sum(P2$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+P2$intermediate<- ((P2$Number)*(P2$Number-1))/denom
+Simpson<-sum(P2$intermediate)
+Table2$Habitat[6]<-"Pine"
+Table2$Transect[6]<-2
+Table2$Simpson[6]<-Simpson
+```
+Now save result
+```{r}
+write.csv(Table2, "GameCamSimpsons.csv")
+```
+
+Just need to average for each transect now.
+```{r}
+Tab2Simpson<-Table2 %>% group_by(Habitat) %>% summarize(
+			meanSimp = mean(Simpson, na.rm = T), 
+			sem_Simp=sd(Simpson)/sqrt(sum(!is.na(Simpson)))
+) 
+write.csv(Tab2Simpson, "game_cam_simp_summary.csv")
+```
+
+
+#####All mammals
+```{r}
+ALL<-AllData%>% group_by(Species) %>% summarise(
+	Total = sum(Number)
+)
+
+AllCritters<-sum(ALL$Total) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+ALL$intermediate<- ((ALL$Total)*(ALL$Total-1))/denom
+Simpson<-sum(ALL$intermediate)
+Group<-"All mammals"
+
+NoHabs$Group[3]<-Group
+NoHabs$Simpson[3]<-Simpson
+```
+
+Begin by getting a separate dataset for each transect
+
+```{r}
+P1<-filter(AllData, Habitat == "Pine" & Transect == 1)
+P2<-filter(AllData, Habitat == "Pine" & Transect == 2)
+D1<-filter(AllData, Habitat == "Deciduous" & Transect == 1)
+D2<-filter(AllData, Habitat == "Deciduous" & Transect == 2)
+H1<-filter(AllData, Habitat == "Hemlock" & Transect == 1)
+H2<-filter(AllData, Habitat == "Hemlock" & Transect == 2)
+```
+
+Now calculate Simpson's index using formula in the analysis guide.
+First set up a DF to receive the results
+```{r}
+Table3<-data.frame(matrix(ncol = 3, nrow = 6))
+colnames(Table3)<-c("Habitat", "Transect", "Simpson")
+```
+Start with Deciduous
+```{r}
+#Deciduous 1
+AllCritters<-sum(D1$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+D1$intermediate<- ((D1$Number)*(D1$Number-1))/denom
+Simpson<-sum(D1$intermediate)
+Table3$Habitat[1]<-"Deciduous"
+Table3$Transect[1]<-1
+Table3$Simpson[1]<-Simpson
+
+
+#Deciduous 2
+AllCritters<-sum(D2$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+D2$intermediate<- ((D2$Number)*(D2$Number-1))/denom
+Simpson<-sum(D2$intermediate)
+Table3$Habitat[2]<-"Deciduous"
+Table3$Transect[2]<-2
+Table3$Simpson[2]<-Simpson
+```
+Now Hemlock
+```{r}
+#Hemlock 1
+AllCritters<-sum(H1$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+H1$intermediate<- ((H1$Number)*(H1$Number-1))/denom
+Simpson<-sum(H1$intermediate)
+Table3$Habitat[3]<-"Hemlock"
+Table3$Transect[3]<-1
+Table3$Simpson[3]<-Simpson
+
+
+#Hemlock 2
+AllCritters<-sum(H2$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+H2$intermediate<- ((H2$Number)*(H2$Number-1))/denom
+Simpson<-sum(H2$intermediate)
+Table3$Habitat[4]<-"Hemlock"
+Table3$Transect[4]<-2
+Table3$Simpson[4]<-Simpson
+```
+
+And now Pine
+```{r}
+#Pine 1
+AllCritters<-sum(P1$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+P1$intermediate<- ((P1$Number)*(P1$Number-1))/denom
+Simpson<-sum(P1$intermediate)
+Table3$Habitat[5]<-"Pine"
+Table3$Transect[5]<-1
+Table3$Simpson[5]<-Simpson
+
+
+#Pine 2
+AllCritters<-sum(P2$Number) #returns total number of critters on the transect
+MostCrits<-AllCritters - 1
+denom<-AllCritters*MostCrits
+P2$intermediate<- ((P2$Number)*(P2$Number-1))/denom
+Simpson<-sum(P2$intermediate)
+Table3$Habitat[6]<-"Pine"
+Table3$Transect[6]<-2
+Table3$Simpson[6]<-Simpson
+```
+Now save result
+```{r}
+write.csv(Table3, "AllMammalsSimpsons.csv")
+```
+
+Just need to average for each transect now.
+```{r}
+Tab3Simpson<-Table3 %>% group_by(Habitat) %>% summarize(
+			meanSimp = mean(Simpson, na.rm = T), 
+			sem_Simp=sd(Simpson)/sqrt(sum(!is.na(Simpson)))
+) 
+write.csv(Tab3Simpson, "all_mammals_simp_summary.csv")
+```
+
+
+
+
+

@@ -1,0 +1,67 @@
+---
+title: "Ground Cover estimates"
+output: html_notebook
+---
+## Introduction
+This markdown document explains how to generate a table showing the average 
+percent bare ground, % vascular cover and % bryophyte cover, as well as litter depth
+for each of the forest habitats, as well as their respective means.
+
+## Step 1. Prep the workspace and turn on desired packages
+```{r}
+rm(list = ls())
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+```
+## Step 2. Load the data and prep it
+Load the data
+```{r}
+library(readr)
+DF <- read_csv("newground.csv")
+#rename some variables
+names(DF)<-c("Row", "Date", "Habitat", "TranNum", "Team", "Station", "Quad", "Measurement", "Value", 
+		   "Comments")
+```
+Now concatenate the habitat and transect number columns to give specific columns
+```{r}
+DF<-mutate(DF, HabNum = paste0(Habitat,"_",TranNum))#create new var
+```
+#Step 3 Summarize data
+First summarize by transect (10 values per transect)
+```{r}
+SummaryData<-DF %>% group_by(Habitat, HabNum, Measurement)%>% summarise(
+	N = length(Value),
+	meanVal= mean(Value, na.rm = T),
+	semVal = sd(Value, na.rm = T)/sqrt(N)
+)
+
+
+```
+Now summarize by habitat type
+```{r}
+PS1Table3<-SummaryData %>% group_by(Habitat, Measurement) %>% summarise(
+		N = length(meanVal),
+	meanVal1= mean(meanVal, na.rm = T),
+	semVal1 = sd(meanVal, na.rm = T)/sqrt(N)
+)
+```
+Now save data
+```{r}
+write.csv(PS1Table3, "PS1Table3.csv")
+```
+Now get a nice plot
+
+```{r}
+ggplot(PS1Table3, aes(x = Habitat, y = meanVal1, fill = Measurement))+
+geom_col(position = "dodge")+
+	coord_flip()+
+	geom_errorbar(aes(ymin = meanVal1 - semVal1,
+				   ymax = meanVal1 + semVal1), width = 0.1)+
+	facet_wrap(~Measurement)+
+	labs(x = "Habitat", y = "Mean value")
+
+ggsave("PS3figure.png", device = "png")
+```
+
+

@@ -1,0 +1,192 @@
+---
+title: 'Forest Structure 2: Mammalogy 2018'
+author: "Erika"
+date: "11/5/2018"
+output: html_document
+---
+
+## Introduction
+The students in Mammalogy are working on analyzing their forest vegetation data to help provide information about what environmental factors may play a role in determining species distributions on the Kip Tract.  In an earlier document (_"Forest Structure Error Check.Rmd"_) I showed how to clean up the data.  Now we will do questions 1 and 2 on the assignment, which are to generate a table with mean species richness, mean simpson's index for each of the 3 habitats (plus/minus SEM)
+
+## Set up the workspace
+Set some basic parameters 
+```{r}
+rm(list =ls()) #clear's R workspace
+library(dplyr)
+library(ggplot2)
+```
+
+###Step 1. Forest Diversity
+Students are asked to calculate average species richness and average Simpson's index for each habitat, using each of the 2 transects within each habitat as a replicate. They are also to provide the standard error of the mean.
+
+#### Load some data
+Load the new tree data
+```{r}
+Trees <- read.csv("newtrees.csv")
+```
+#### Species Richness
+Species richness is the number of species on a transect.
+
+```{r}
+MySummary<-Trees %>% group_by(Habitat, Transect.Number) %>%
+	summarize(
+		num_species=n_distinct(Species))
+		
+	
+```
+Now get summary info
+```{r}
+SR_sum_stats<-MySummary %>% group_by (Habitat) %>% 
+	summarize (
+		mean_species=mean(num_species, na.rm = T),
+		sem_species=sd(num_species)/sqrt(sum(!is.na(num_species)))
+	)
+```
+This information completes the first column of data asked for as Q1 on problem set 1.
+
+#### Simpson's index
+We'll look at two ways to calculate the average simpson's index for each of the two transects for each habitat so that we can get means and sem.
+
+The first method will be that which I described in class as the way to calculate Simpson's index.
+
+Begin by getting a separate dataset for each transect
+
+```{r}
+P1<-filter(Trees, Habitat == "Pine" & Transect.Number == 1)
+P2<-filter(Trees, Habitat == "Pine" & Transect.Number == 2)
+D1<-filter(Trees, Habitat == "Deciduous" & Transect.Number == 1)
+D2<-filter(Trees, Habitat == "Deciduous" & Transect.Number == 2)
+H1<-filter(Trees, Habitat == "Hemlock" & Transect.Number == 1)
+H2<-filter(Trees, Habitat == "Hemlock" & Transect.Number == 2)
+```
+
+Could we have done that more easily w/dplyr?
+```{r}
+SumTrees<-Trees %>% group_by(Habitat, Transect.Number) %>% 
+	summarize (
+		NumTrees=length(Species),
+		NumSpecies=n_distinct(Species)
+	)
+```
+Now, for each one of the six transects, determine the number of trees in each species.
+
+```{r}
+Pine1<-P1 %>% group_by(Species) %>% summarize (
+	total = length(Species)
+)
+AllTrees<-sum(Pine1$total) #returns total number of trees on the transect
+MostTrees<-AllTrees - 1
+denom<-AllTrees*MostTrees
+```
+This result gives me Table 1 in the analysis_guide_part_1_VEG handout for one of the transects on one of the sites.
+
+Now calculate Simpson's index using formula in the analysis guide.
+
+First set up a DF to receive the results
+```{r}
+Table1<-data.frame(matrix(ncol = 3, nrow = 6))
+colnames(Table1)<-c("Habitat", "Transect", "Simpson")
+```
+
+```{r}
+Pine1$intermediate<- ((Pine1$total)*(Pine1$total-1))/denom
+Simpson<-sum(Pine1$intermediate)
+Table1$Habitat[1]<-"Pine"
+Table1$Transect[1]<-1
+Table1$Simpson[1]<-Simpson
+```
+Pine 2
+```{r}
+Pine2<-P2 %>% group_by(Species) %>% summarize (
+	total = length(Species)
+)
+AllTrees<-sum(Pine2$total) #returns total number of trees on the transect
+MostTrees<-AllTrees - 1
+denom<-AllTrees*MostTrees
+
+Pine2$intermediate<- ((Pine2$total)*(Pine2$total-1))/denom
+Simpson<-sum(Pine2$intermediate)
+Table1$Habitat[2]<-"Pine"
+Table1$Transect[2]<-2
+Table1$Simpson[2]<-Simpson
+```
+Deciduous 1
+```{r}
+Decid1<-D1 %>% group_by(Species) %>% summarize (
+	total = length(Species)
+)
+AllTrees<-sum(Decid1$total) #returns total number of trees on the transect
+MostTrees<-AllTrees - 1
+denom<-AllTrees*MostTrees
+
+Decid1$intermediate<- ((Decid1$total)*(Decid1$total-1))/denom
+Simpson<-sum(Decid1$intermediate)
+Table1$Habitat[3]<-"Deciduous"
+Table1$Transect[3]<-1
+Table1$Simpson[3]<-Simpson
+```
+Deciduous 2
+
+```{r}
+Decid2<-D2 %>% group_by(Species) %>% summarize (
+	total = length(Species)
+)
+AllTrees<-sum(Decid2$total) #returns total number of trees on the transect
+MostTrees<-AllTrees - 1
+denom<-AllTrees*MostTrees
+
+Decid2$intermediate<- ((Decid2$total)*(Decid2$total-1))/denom
+Simpson<-sum(Decid2$intermediate)
+Table1$Habitat[4]<-"Deciduous"
+Table1$Transect[4]<-2
+Table1$Simpson[4]<-Simpson
+```
+Hemlock 1
+
+```{r}
+Hem1<-H1 %>% group_by(Species) %>% summarize (
+	total = length(Species)
+)
+AllTrees<-sum(Hem1$total) #returns total number of trees on the transect
+MostTrees<-AllTrees - 1
+denom<-AllTrees*MostTrees
+
+Hem1$intermediate<- ((Hem1$total)*(Hem1$total-1))/denom
+Simpson<-sum(Hem1$intermediate)
+Table1$Habitat[5]<-"Hemlock"
+Table1$Transect[5]<-1
+Table1$Simpson[5]<-Simpson
+```
+Hemlock 2
+```{r}
+Hem2<-H2 %>% group_by(Species) %>% summarize (
+	total = length(Species)
+)
+AllTrees<-sum(Hem2$total) #returns total number of trees on the transect
+MostTrees<-AllTrees - 1
+denom<-AllTrees*MostTrees
+
+Hem2$intermediate<- ((Hem2$total)*(Hem2$total-1))/denom
+Simpson<-sum(Hem2$intermediate)
+Table1$Habitat[6]<-"Hemlock"
+Table1$Transect[6]<-2
+Table1$Simpson[6]<-Simpson
+```
+This completes the intermediate step I need for column 2 in table 1 on the assignment.  Just need to average for each transect now.
+```{r}
+Tab1Simpson<-Table1 %>% group_by(Habitat) %>% summarize(
+			meanSimp = mean(Simpson, na.rm = T), 
+			sem_Simp=sd(Simpson)/sqrt(sum(!is.na(Simpson)))
+) 
+```
+Now combine to one table
+```{r}
+CompleteTable1<-cbind(SR_sum_stats, Tab1Simpson )
+write.csv(CompleteTable1, "CompleteTable1.csv")
+```
+
+
+
+Now can I loop through this somehow to make it faster?  I'll figure this out later, when I'm not trying to get the key...
+
+

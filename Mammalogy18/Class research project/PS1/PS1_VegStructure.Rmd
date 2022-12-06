@@ -1,0 +1,546 @@
+---
+title: 'Forest Structure 3: Mammalogy 2018'
+author: "Erika"
+date: "11/7/2018"
+output: html_document
+---
+## Introduction
+As we continue solving the Mammalogy problem set generating summary data about the vegetation structure of our three habitat types, we will now step through the process of determining averages of relative density, relative basal area, relative frequency and importance value for each habitat type.  N in each is 2, values from each of the two transects in each habitat.  These steps follow those outlined in the document "PS1_SpecRich_Simpson.Rmd"
+
+## Step 1.  Prepare the workspace and bring in some data
+Let's get R ready to rock-n-roll!
+```{r}
+rm(list = ls()) #clear's the workspace
+library(dplyr)
+library(ggplot2)
+```
+Now load data
+```{r}
+Trees <- read.csv("newtrees.csv")
+```
+## Step 2. Forest structure analysis
+Our next task is to determine the average importance values for each species in each habitat. We'll start by getting a new DF for each habitat.
+
+```{r}
+Pines<-filter(Trees, Habitat == "Pine")
+Decid<-filter(Trees, Habitat == "Deciduous")
+Hem<-filter(Trees, Habitat == "Hemlock")
+```
+Now we'll work with each data set to do the calculations according to the Analysis guide.
+
+### A. Average Density
+We start calculating average density by determining the mean point-to-individual distance for all of the trees on a single transect within a single habitat.
+We will call mean point-to-individual distance MPI, mean area per plant MAP, and average density AVGDEN.
+
+Let's begin by creating a new data frame to take all of the data
+
+```{r}
+temp_DF<-data.frame(matrix(ncol = 5, nrow = 6))
+colnames(temp_DF)<-c("Habitat", "Transect", "MPI", "MAP", "AVGDEN")
+```
+
+```{r}
+calcsPine <- Pines %>% group_by(Transect.Number) %>% summarise(
+		MPI = mean(Distance, na.rm = T),
+		MAP = MPI*MPI,
+		AVGDEN = (100/MAP)
+)
+```
+Now repeat for the other 2 habitats .
+```{r}
+calcsHem<-Hem %>% group_by(Transect.Number) %>% summarise(
+	MPI = mean(Distance, na.rm = T),
+	MAP = MPI*MPI,
+	AVGDEN = (100/MAP)
+)
+calcsDecid<-Decid %>% group_by(Transect.Number) %>% summarise(
+	MPI = mean(Distance, na.rm = T),
+	MAP = MPI*MPI,
+	AVGDEN = (100/MAP)
+)
+```
+Now let's try merging the 3 DFs into one to reduce junk. Use rbind and then add
+a column indicating habitat. Then we'll remove some "intermediate" DFs to clean up the workspace.
+```{r}
+AvgDenData<-rbind(calcsPine, calcsDecid, calcsHem)
+AvgDenData$Habitat<-c("Pine", "Pine", "Decid", "Decid", "Hem", "Hem")
+rm(calcsDecid, calcsHem, calcsPine, temp_DF)#removes the DFs I no longer need
+```
+### B. Relative density, Relative basal area, relative frequency and importance value
+
+Now work through each transect calculating all of the steps that give you relative density, relative basal area, relative frequency and Importance Value.
+#### First Transect
+##### Relative Density
+Get number of trees of each species on each transect
+```{r}
+P1<-filter(Pines, Transect.Number == 1)
+TreesP1<-P1 %>% group_by(Species) %>% summarize (
+	total = length(Species),
+)
+```
+Now get total number of trees and calculate relative density and species density
+```{r}
+AllTreesP1<-sum(TreesP1$total)
+
+TreesP1$RELDEN<-(TreesP1$total/AllTreesP1)*100
+
+TreesP1$DEN<-((TreesP1$RELDEN)/100)*AvgDenData$AVGDEN[1]
+
+#check that it is correct: all densities together should add to the average density for the transect
+
+AvgDenData$AVGDEN[1] == sum(TreesP1$DEN)
+
+```
+##### Relative basal area
+First step is that we need to calculate the basal area of each tree in the transect to area.
+
+```{r}
+P1$Radius<-P1$DBH/2
+P1$Area<-pi*(P1$Radius^2)
+AVGBA<- P1 %>% group_by(Species)  %>% summarise(
+	AVGBA=mean(Area, na.rm = T)
+) #returns class a DF with 2 columns; can't easily directly combine with TreesP1 so do this step then next line
+
+TreesP1$AVGBA<-AVGBA$AVGBA
+
+```
+Now calculate BA and relba
+```{r}
+TreesP1$BA<-TreesP1$DEN*TreesP1$AVGBA
+TotalBA<-sum(TreesP1$BA)
+TreesP1$RELBA<-((TreesP1$BA/TotalBA)*100)
+```
+##### Relative frequency and Importance Value
+Now frequency and relative frequency. Frequency will be a bit harder, since it requires assessing for each species which trap stations the species occurred at out of 10 possible.Let's try a loop.
+
+```{r}
+NumStations<-10
+MySpecies<-levels(factor(P1$Species))
+Freq<-vector()
+temp<-vector()
+i<-1
+for (i in 1:length(MySpecies)){
+	test<-filter(P1, Species == MySpecies[i])
+	Stations<-unique(test$Trap.Station)
+	temp[i]<-length(Stations)
+	Freq[i]<-temp[i]/NumStations
+}
+TreesP1$FREQ<-Freq
+SumFreq<-sum(TreesP1$FREQ)
+TreesP1$RELFREQ<-(TreesP1$FREQ/SumFreq)*100
+TreesP1$IV<-TreesP1$RELDEN+TreesP1$RELBA+TreesP1$RELFREQ
+#now assign the correct transect and habitat to keep track of later
+TreesP1$Habitat<-as.factor("Pine")
+TreesP1$Transect.Number <- 1
+
+```
+This works, and gives me correct numbers according to my excel calculations.  I've already
+found 2 human error issues on excel that are mistakes R did not make!
+
+
+Now just re-run for the other 5 transects and get ready to create averages.
+
+
+#### Second Transect
+##### Relative Density
+Get number of trees of each species on each transect
+```{r}
+P2<-filter(Pines, Transect.Number == 2)
+TreesP2<-P2 %>% group_by(Species) %>% summarize (
+	total = length(Species),
+)
+```
+Now get total number of trees and calculate relative density and species density
+```{r}
+AllTreesP2<-sum(TreesP2$total)
+
+TreesP2$RELDEN<-(TreesP2$total/AllTreesP2)*100
+
+TreesP2$DEN<-((TreesP2$RELDEN)/100)*AvgDenData$AVGDEN[2]
+
+#check that it is correct: all densities together should add to the average density for the transect
+
+AvgDenData$AVGDEN[2] == sum(TreesP2$DEN)
+
+```
+##### Relative basal area
+First step is that we need to calculate the basal area of each tree in the transect to area.
+
+```{r}
+P2$Radius<-P2$DBH/2
+P2$Area<-pi*(P2$Radius^2)
+AVGBA<- P2 %>% group_by(Species)  %>% summarise(
+	AVGBA=mean(Area, na.rm = T)
+) #returns class a DF with 2 columns; can't easily directly combine with TreesP2 so do this step then next line
+
+TreesP2$AVGBA<-AVGBA$AVGBA
+
+```
+Now calculate BA and relba
+```{r}
+TreesP2$BA<-TreesP2$DEN*TreesP2$AVGBA
+TotalBA<-sum(TreesP2$BA)
+TreesP2$RELBA<-((TreesP2$BA/TotalBA)*100)
+```
+##### Relative frequency and Importance Value
+Now frequency and relative frequency. Frequency will be a bit harder, since it requires assessing for each species which trap stations the species occurred at out of 10 possible.Let's try a loop.
+
+```{r}
+NumStations<-10
+MySpecies<-levels(factor(P2$Species))
+Freq<-vector()
+temp<-vector()
+i<-1
+for (i in 1:length(MySpecies)){
+	test<-filter(P2, Species == MySpecies[i])
+	Stations<-unique(test$Trap.Station)
+	temp[i]<-length(Stations)
+	Freq[i]<-temp[i]/NumStations
+}
+TreesP2$FREQ<-Freq
+SumFreq<-sum(TreesP2$FREQ)
+TreesP2$RELFREQ<-(TreesP2$FREQ/SumFreq)*100
+TreesP2$IV<-TreesP2$RELDEN+TreesP2$RELBA+TreesP2$RELFREQ
+#now assign the correct transect and habitat to keep track of later
+TreesP2$Habitat<-as.factor("Pine")
+TreesP2$Transect.Number <- 2
+
+```
+####Third Transect
+##### Relative Density
+Get number of trees of each species on each transect
+```{r}
+D1<-filter(Decid, Transect.Number == 1)
+TreesD1<-D1 %>% group_by(Species) %>% summarize (
+	total = length(Species),
+)
+```
+Now get total number of trees and calculate relative density and species density
+```{r}
+AllTreesD1<-sum(TreesD1$total)
+
+TreesD1$RELDEN<-(TreesD1$total/AllTreesD1)*100
+
+TreesD1$DEN<-((TreesD1$RELDEN)/100)*AvgDenData$AVGDEN[3]
+
+#check that it is correct: all densities together should add to the average density for the transect
+
+AvgDenData$AVGDEN[3] == sum(TreesD1$DEN)
+
+```
+##### Relative basal area
+First step is that we need to calculate the basal area of each tree in the transect to area.
+
+```{r}
+D1$Radius<-D1$DBH/2
+D1$Area<-pi*(D1$Radius^2)
+AVGBA<- D1 %>% group_by(Species)  %>% summarise(
+	AVGBA=mean(Area, na.rm = T)
+) #returns class a DF with 2 columns; can't easily directly combine with TreesD1 so do this step then next line
+
+TreesD1$AVGBA<-AVGBA$AVGBA
+
+```
+Now calculate BA and relba
+```{r}
+TreesD1$BA<-TreesD1$DEN*TreesD1$AVGBA
+TotalBA<-sum(TreesD1$BA)
+TreesD1$RELBA<-((TreesD1$BA/TotalBA)*100)
+```
+##### Relative frequency and Importance Value
+Now frequency and relative frequency. Frequency will be a bit harder, since it requires assessing for each species which trap stations the species occurred at out of 10 possible.Let's try a loop.
+
+```{r}
+NumStations<-10
+MySpecies<-levels(factor(D1$Species))
+Freq<-vector()
+temp<-vector()
+i<-1
+for (i in 1:length(MySpecies)){
+	test<-filter(D1, Species == MySpecies[i])
+	Stations<-unique(test$Trap.Station)
+	temp[i]<-length(Stations)
+	Freq[i]<-temp[i]/NumStations
+}
+TreesD1$FREQ<-Freq
+SumFreq<-sum(TreesD1$FREQ)
+TreesD1$RELFREQ<-(TreesD1$FREQ/SumFreq)*100
+TreesD1$IV<-TreesD1$RELDEN+TreesD1$RELBA+TreesD1$RELFREQ
+#now assign the correct transect and habitat to keep track of later
+TreesD1$Habitat<-as.factor("Decid")
+TreesD1$Transect.Number <- 1
+```
+#### Fourth Transect
+##### Relative Density
+Get number of trees of each species on each transect
+```{r}
+D2<-filter(Decid, Transect.Number == 2)
+TreesD2<-D2 %>% group_by(Species) %>% summarize (
+	total = length(Species),
+)
+```
+Now get total number of trees and calculate relative density and species density
+```{r}
+AllTreesD2<-sum(TreesD2$total)
+
+TreesD2$RELDEN<-(TreesD2$total/AllTreesD2)*100
+
+TreesD2$DEN<-((TreesD2$RELDEN)/100)*AvgDenData$AVGDEN[4]
+
+#check that it is correct: all densities together should add to the average density for the transect
+
+AvgDenData$AVGDEN[4] == sum(TreesD2$DEN)
+
+```
+##### Relative basal area
+First step is that we need to calculate the basal area of each tree in the transect to area.
+
+```{r}
+D2$Radius<-D2$DBH/2
+D2$Area<-pi*(D2$Radius^2)
+AVGBA<- D2 %>% group_by(Species)  %>% summarise(
+	AVGBA=mean(Area, na.rm = T)
+) #returns class a DF with 2 columns; can't easily directly combine with TreesD2 so do this step then next line
+
+TreesD2$AVGBA<-AVGBA$AVGBA
+
+```
+Now calculate BA and relba
+```{r}
+TreesD2$BA<-TreesD2$DEN*TreesD2$AVGBA
+TotalBA<-sum(TreesD2$BA)
+TreesD2$RELBA<-((TreesD2$BA/TotalBA)*100)
+```
+##### Relative frequency and Importance Value
+Now frequency and relative frequency. Frequency will be a bit harder, since it requires assessing for each species which trap stations the species occurred at out of 10 possible.Let's try a loop.
+
+```{r}
+NumStations<-10
+MySpecies<-levels(factor(D2$Species))
+Freq<-vector()
+temp<-vector()
+i<-1
+for (i in 1:length(MySpecies)){
+	test<-filter(D2, Species == MySpecies[i])
+	Stations<-unique(test$Trap.Station)
+	temp[i]<-length(Stations)
+	Freq[i]<-temp[i]/NumStations
+}
+TreesD2$FREQ<-Freq
+SumFreq<-sum(TreesD2$FREQ)
+TreesD2$RELFREQ<-(TreesD2$FREQ/SumFreq)*100
+TreesD2$IV<-TreesD2$RELDEN+TreesD2$RELBA+TreesD2$RELFREQ
+#now assign the correct transect and habitat to keep track of later
+TreesD2$Habitat<-as.factor("Decid")
+TreesD2$Transect.Number <- 2
+```
+#### Fifth transect
+##### Relative Density
+Get number of trees of each species on each transect
+```{r}
+H1<-filter(Hem, Transect.Number == 1)
+TreesH1<-H1 %>% group_by(Species) %>% summarize (
+	total = length(Species),
+)
+```
+Now get total number of trees and calculate relative density and species density
+```{r}
+AllTreesH1<-sum(TreesH1$total)
+
+TreesH1$RELDEN<-(TreesH1$total/AllTreesH1)*100
+
+TreesH1$DEN<-((TreesH1$RELDEN)/100)*AvgDenData$AVGDEN[5]
+
+#check that it is correct: all densities together should add to the average density for the transect
+
+AvgDenData$AVGDEN[5] == sum(TreesH1$DEN)
+
+```
+##### Relative basal area
+First step is that we need to calculate the basal area of each tree in the transect to area.
+
+```{r}
+H1$Radius<-H1$DBH/2
+H1$Area<-pi*(H1$Radius^2)
+AVGBA<- H1 %>% group_by(Species)  %>% summarise(
+	AVGBA=mean(Area, na.rm = T)
+) #returns class a DF with 2 columns; can't easily directly combine with TreesH1 so do this step then next line
+
+TreesH1$AVGBA<-AVGBA$AVGBA
+
+```
+Now calculate BA and relba
+```{r}
+TreesH1$BA<-TreesH1$DEN*TreesH1$AVGBA
+TotalBA<-sum(TreesH1$BA)
+TreesH1$RELBA<-((TreesH1$BA/TotalBA)*100)
+```
+##### Relative frequency and Importance Value
+Now frequency and relative frequency. Frequency will be a bit harder, since it requires assessing for each species which trap stations the species occurred at out of 10 possible.Let's try a loop.
+
+```{r}
+NumStations<-10
+MySpecies<-levels(factor(H1$Species))
+Freq<-vector()
+temp<-vector()
+i<-1
+for (i in 1:length(MySpecies)){
+	test<-filter(H1, Species == MySpecies[i])
+	Stations<-unique(test$Trap.Station)
+	temp[i]<-length(Stations)
+	Freq[i]<-temp[i]/NumStations
+}
+TreesH1$FREQ<-Freq
+SumFreq<-sum(TreesH1$FREQ)
+TreesH1$RELFREQ<-(TreesH1$FREQ/SumFreq)*100
+TreesH1$IV<-TreesH1$RELDEN+TreesH1$RELBA+TreesH1$RELFREQ
+#now assign the correct transect and habitat to keep track of later
+TreesH1$Habitat<-as.factor("Hem")
+TreesH1$Transect.Number <- 1
+```
+#### Sixth Transect
+##### Relative Density
+Get number of trees of each species on each transect
+```{r}
+H2<-filter(Hem, Transect.Number == 2)
+TreesH2<-H2 %>% group_by(Species) %>% summarize (
+	total = length(Species),
+)
+```
+Now get total number of trees and calculate relative density and species density
+```{r}
+AllTreesH2<-sum(TreesH2$total)
+
+TreesH2$RELDEN<-(TreesH2$total/AllTreesH2)*100
+
+TreesH2$DEN<-((TreesH2$RELDEN)/100)*AvgDenData$AVGDEN[6]
+
+#check that it is correct: all densities together should add to the average density for the transect
+
+AvgDenData$AVGDEN[6] == sum(TreesH2$DEN)
+
+```
+##### Relative basal area
+First step is that we need to calculate the basal area of each tree in the transect to area.
+
+```{r}
+H2$Radius<-H2$DBH/2
+H2$Area<-pi*(H2$Radius^2)
+AVGBA<- H2 %>% group_by(Species)  %>% summarise(
+	AVGBA=mean(Area, na.rm = T)
+) #returns class a DF with 2 columns; can't easily directly combine with TreesH2 so do this step then next line
+
+TreesH2$AVGBA<-AVGBA$AVGBA
+
+```
+Now calculate BA and relba
+```{r}
+TreesH2$BA<-TreesH2$DEN*TreesH2$AVGBA
+TotalBA<-sum(TreesH2$BA)
+TreesH2$RELBA<-((TreesH2$BA/TotalBA)*100)
+```
+##### Relative frequency and Importance Value
+Now frequency and relative frequency. Frequency will be a bit harder, since it requires assessing for each species which trap stations the species occurred at out of 10 possible.Let's try a loop.
+
+```{r}
+NumStations<-10
+MySpecies<-levels(factor(H2$Species))
+Freq<-vector()
+temp<-vector()
+i<-1
+for (i in 1:length(MySpecies)){
+	test<-filter(H2, Species == MySpecies[i])
+	Stations<-unique(test$Trap.Station)
+	temp[i]<-length(Stations)
+	Freq[i]<-temp[i]/NumStations
+}
+TreesH2$FREQ<-Freq
+SumFreq<-sum(TreesH2$FREQ)
+TreesH2$RELFREQ<-(TreesH2$FREQ/SumFreq)*100
+TreesH2$IV<-TreesH2$RELDEN+TreesH2$RELBA+TreesH2$RELFREQ
+#now assign the correct transect and habitat to keep track of later
+TreesH2$Habitat<-as.factor("Hem")
+TreesH2$Transect.Number <- 2
+```
+
+Now squish into one DF to make summary easier and to clean up workspace
+
+```{r}
+AllData<-rbind(TreesD1,TreesD2, TreesH1, TreesH2, TreesP1, TreesP2)
+#now get rid of some stuff
+rm(AVGBA, D1,D2, Decid, H1, H2, Hem, P1, P2, Pines, test, Trees)
+```
+
+#now let's summarize 
+```{r}
+SummaryData<-AllData %>% group_by(Habitat, Species)%>% summarise(
+	N = length(Species),
+		avgRELDEN = mean(RELDEN, na.rm = T),
+		semRELDEN = sd(RELDEN)/sqrt(sum(!is.na(RELDEN))),
+		avgRELBA = mean(RELBA, na.rm = T),
+		semRELBA = sd(RELBA)/sqrt(sum(!is.na(RELBA))),
+		avgRELFREQ = mean(RELFREQ, na.rm = T),
+		semRELFREQ = sd(RELFREQ)/sqrt(sum(!is.na(RELFREQ))),
+		avgIV = mean (IV, na.rm = T),
+		semIV = sd(IV)/sqrt(sum(!is.na(IV)))
+	)
+#note: if you use the same variable name for the new DF (in this case SummaryData)
+#as you have in the first DF (in this case AllData), you will not get the sem calculations.
+
+#this summary table produces the information required for the long table in the problem set
+
+#write results
+write.csv(SummaryData, "longPS1table.csv")
+
+```
+
+Now create plot required in PS1
+
+```{r}
+#really nice plot with facet wrap and error bars
+ggplot(SummaryData, aes(x = Species, y = avgIV, fill = Habitat))+
+	geom_col(position = "dodge")+
+	coord_flip()+
+	geom_errorbar(aes(ymin = avgIV - semIV,
+				   ymax = avgIV + semIV), width = 0.1)+
+	facet_wrap(~Habitat)+
+	labs(x = "Species", y = "Average Importance Value")
+
+ggsave("PS1figure.png", device = "png")
+
+#less clear plot without facet wrap
+ggplot(SummaryData, aes(x = Species, y = avgIV, fill = Habitat))+
+	geom_col(position = "dodge")+
+	coord_flip()+
+	geom_errorbar(aes(ymin = avgIV - semIV,
+				   ymax = avgIV + semIV))+
+	labs(x = "Species", y = "Average Importance Value")
+```
+
+
+
+
+### Try a loop
+First, concatenate Habitat and transect to give a unique name for each transect.
+```{r}
+#Trees<-mutate(Trees, TranNum = paste0(Habitat, Transect.Number))#create new var
+```
+Next, get variable with list of transects
+```{r}
+#Transects<-unique(Trees$TranNum)
+```
+Now I can do a loop through each transect.  I will make a new DF for each transect and then use them later.
+
+```{r}
+#for(i in 1: length(Transects)){
+	#DF<-filter(Trees, TranNum == Transects[i]) #creates DF with first transect
+	#Species<-DF %>% group_by(Species) %>% summarize (
+	#	total= length(Species)
+	#)
+	#AllTrees<-sum(Species$total)
+#}	
+```
+
+
+
+

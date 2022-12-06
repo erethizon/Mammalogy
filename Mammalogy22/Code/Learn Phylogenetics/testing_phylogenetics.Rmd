@@ -1,0 +1,44 @@
+---
+title: "Practicing phylogenetic analysis"
+author: "Erika"
+date: "2022-12-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+I would like to build out some methods for demonstrating/letting students play with modern molecular phylogenetics applications in mammalogy. Here I will build a workflow, which then might be fun to eventually build into a shiny app.
+
+## Resources for learning
+Here are some of the links I used for building this code
+
+[BIOS1140 University of Oslo](https://bios1140.github.io/)
+
+[panghorn:phylotgenetic annalysis in R article](https://academic.oup.com/bioinformatics/article/27/4/592/198887?login=true)
+
+Particularly this article [A workflow with R: Phylogenetic analyses and visualizations using mitochondrial cytochrome b gene sequences](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0243927)
+
+# Get started
+Set up the workspace and install required packages
+
+```{r}
+rm(list =ls())
+require(pacman) #turns on pacman, a package management package
+library(tidyverse)
+p_load(msa)#checks to see if msa is installed, loads if true, installs and loads if false
+```
+
+## Install `msa` package
+The `msa` package is distributed by [Bioconductor](http://www.bioconductor.org/). According to Toparsian et al., msa "is a unified R/Bioconductor interface and implements three multiple sequence alignment methods (ClustalW, ClustalOmega and MUSCLE). They do not need any other external software tools because they are all integrated in the package. Sequence types that this package can read for alignment are "B", "DNA", "RNA" or "AA" that is a single string specifying the type of sequences contained in the FASTA format file (.fa, .fas, or .fasta) or fastaq file. The readDNAStringSet() function and its family: readBStringSet(), readRNAStringSet(), readAAStringSet() load sequences from an input file (or multiple input files) into an XStringSet object. Results are stored as objects provided by the Biostrings package. Therefore, multiple sequence alignment process is inherited from the Biostrings package."
+
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("msa")
+```
+ 
+ 

@@ -1,0 +1,40 @@
+---
+title: "Survivorship Curves"
+output: html_notebook
+---
+
+Let's plot a survivorship curve from Dall's sheep data
+
+Set things up
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+```
+Now pull in the data
+```{r}
+sheep<-read.csv(here("Mammalogy22", "Data", "dalls_sheep_survivorship.csv"))
+```
+Now we need to transform nx and lx to a log scale
+```{r}
+sheep <- sheep %>% mutate(
+  log_nx = log(nx),
+  log_lx = log(lx)
+)
+```
+Actually, we'll just plot raw numbers on a log-transformed y-axis
+
+```{r}
+ggplot(sheep, aes(x = Age, y = nx))+
+  geom_point(size = 2)+
+  scale_y_continuous(trans='log10')+
+  labs(title = "Survivorship in Dall's sheep",x = "Age", y = "Number of survivors, nx, on log scale")+
+  theme(text = element_text(size = 16))   
+
+ggsave(here("Mammalogy22","dalls_sheep.png"),device = png)
+
+
+
+
+```
+

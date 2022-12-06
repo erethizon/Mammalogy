@@ -1,0 +1,241 @@
+"","Date","Habitat","Transect Number","Team members","Trap Station","Veg quad","Measurement","Value","Comments"
+"1","9/5/18","Deciduous",1,"Sam & Aidan",1,"NW","Bare",20,NA
+"2","9/5/18","Deciduous",1,"Sam & Aidan",1,"NW","Bryophytes",10,NA
+"3","9/5/18","Deciduous",1,"Sam & Aidan",1,"NW","Vascular",70,NA
+"4","9/5/18","Deciduous",1,"Sam & Aidan",1,"NW","Litter Depth",5,NA
+"5","9/5/18","Deciduous",1,"Sam & Aidan",2,"NE","Bare",68,NA
+"6","9/5/18","Deciduous",1,"Sam & Aidan",2,"NE","Bryophytes",25,NA
+"7","9/5/18","Deciduous",1,"Sam & Aidan",2,"NE","Vascular",7,NA
+"8","9/5/18","Deciduous",1,"Sam & Aidan",2,"NE","Litter Depth",2,NA
+"9","9/5/18","Deciduous",1,"Sam & Aidan",3,"SE","Bare",94,NA
+"10","9/5/18","Deciduous",1,"Sam & Aidan",3,"SE","Bryophytes",6,NA
+"11","9/5/18","Deciduous",1,"Sam & Aidan",3,"SE","Vascular",0,NA
+"12","9/5/18","Deciduous",1,"Sam & Aidan",3,"SE","Litter Depth",1,NA
+"13","9/5/18","Deciduous",1,"Sam & Aidan",4,"NW","Bare",75,"""dead"" tree"
+"14","9/5/18","Deciduous",1,"Sam & Aidan",4,"NW","Bryophytes",20,NA
+"15","9/5/18","Deciduous",1,"Sam & Aidan",4,"NW","Vascular",5,NA
+"16","9/5/18","Deciduous",1,"Sam & Aidan",4,"NW","Litter Depth",4,NA
+"17","9/5/18","Deciduous",1,"Sam & Aidan",5,"SE","Bare",0,NA
+"18","9/5/18","Deciduous",1,"Sam & Aidan",5,"SE","Bryophytes",100,NA
+"19","9/5/18","Deciduous",1,"Sam & Aidan",5,"SE","Vascular",0,NA
+"20","9/5/18","Deciduous",1,"Sam & Aidan",5,"SE","Litter Depth",7,NA
+"21","9/12/18","Deciduous",1,"Sam & Aidan",6,"NW","Bare",0,NA
+"22","9/12/18","Deciduous",1,"Sam & Aidan",6,"NW","Bryophytes",40,NA
+"23","9/12/18","Deciduous",1,"Sam & Aidan",6,"NW","Vascular",60,NA
+"24","9/12/18","Deciduous",1,"Sam & Aidan",6,"NW","Litter Depth",5,NA
+"25","9/12/18","Deciduous",1,"Sam & Aidan",7,"SW","Bare",0,"mysterious dead tree"
+"26","9/12/18","Deciduous",1,"Sam & Aidan",7,"SW","Bryophytes",50,NA
+"27","9/12/18","Deciduous",1,"Sam & Aidan",7,"SW","Vascular",50,NA
+"28","9/12/18","Deciduous",1,"Sam & Aidan",7,"SW","Litter Depth",2,NA
+"29","9/12/18","Deciduous",1,"Sam & Aidan",8,"SW","Bare",0,NA
+"30","9/12/18","Deciduous",1,"Sam & Aidan",8,"SW","Bryophytes",90,NA
+"31","9/12/18","Deciduous",1,"Sam & Aidan",8,"SW","Vascular",10,NA
+"32","9/12/18","Deciduous",1,"Sam & Aidan",8,"SW","Litter Depth",15,NA
+"33","9/12/18","Deciduous",1,"Sam & Aidan",9,"SE","Bare",0,NA
+"34","9/12/18","Deciduous",1,"Sam & Aidan",9,"SE","Bryophytes",85,NA
+"35","9/12/18","Deciduous",1,"Sam & Aidan",9,"SE","Vascular",15,NA
+"36","9/12/18","Deciduous",1,"Sam & Aidan",9,"SE","Litter Depth",5,NA
+"37","9/12/18","Deciduous",1,"Sam & Aidan",10,"NW","Bare",65,NA
+"38","9/12/18","Deciduous",1,"Sam & Aidan",10,"NW","Bryophytes",30,NA
+"39","9/12/18","Deciduous",1,"Sam & Aidan",10,"NW","Vascular",5,NA
+"40","9/12/18","Deciduous",1,"Sam & Aidan",10,"NW","Litter Depth",3,NA
+"41","9/5/18","Deciduous",2,"Emily & Austin",1,"SW","Bare",100,NA
+"42","9/5/18","Deciduous",2,"Emily & Austin",1,"SW","Bryophytes",0,NA
+"43","9/5/18","Deciduous",2,"Emily & Austin",1,"SW","Vascular",0,NA
+"44","9/5/18","Deciduous",2,"Emily & Austin",1,"SW","Litter Depth",4,NA
+"45","9/5/18","Deciduous",2,"Emily & Austin",2,"SE","Bare",98,NA
+"46","9/5/18","Deciduous",2,"Emily & Austin",2,"SE","Bryophytes",1,NA
+"47","9/5/18","Deciduous",2,"Emily & Austin",2,"SE","Vascular",1,NA
+"48","9/5/18","Deciduous",2,"Emily & Austin",2,"SE","Litter Depth",4,NA
+"49","9/5/18","Deciduous",2,"Emily & Austin",3,"SE","Bare",65,NA
+"50","9/5/18","Deciduous",2,"Emily & Austin",3,"SE","Bryophytes",0,NA
+"51","9/5/18","Deciduous",2,"Emily & Austin",3,"SE","Vascular",35,NA
+"52","9/5/18","Deciduous",2,"Emily & Austin",3,"SE","Litter Depth",3,NA
+"53","9/5/18","Deciduous",2,"Emily & Austin",4,"NE","Bare",7,NA
+"54","9/5/18","Deciduous",2,"Emily & Austin",4,"NE","Bryophytes",90,NA
+"55","9/5/18","Deciduous",2,"Emily & Austin",4,"NE","Vascular",3,NA
+"56","9/5/18","Deciduous",2,"Emily & Austin",4,"NE","Litter Depth",4,NA
+"57","9/5/18","Deciduous",2,"Emily & Austin",5,"SW","Bare",25,NA
+"58","9/5/18","Deciduous",2,"Emily & Austin",5,"SW","Bryophytes",70,NA
+"59","9/5/18","Deciduous",2,"Emily & Austin",5,"SW","Vascular",5,NA
+"60","9/5/18","Deciduous",2,"Emily & Austin",5,"SW","Litter Depth",3,NA
+"61","9/12/18","Deciduous",2,"Emily & Austin",6,"SW","Bare",10,NA
+"62","9/12/18","Deciduous",2,"Emily & Austin",6,"SW","Bryophytes",85,NA
+"63","9/12/18","Deciduous",2,"Emily & Austin",6,"SW","Vascular",5,NA
+"64","9/12/18","Deciduous",2,"Emily & Austin",6,"SW","Litter Depth",NA,"more than the ruler could measure"
+"65","9/12/18","Deciduous",2,"Emily & Austin",7,"NE","Bare",5,NA
+"66","9/12/18","Deciduous",2,"Emily & Austin",7,"NE","Bryophytes",92,NA
+"67","9/12/18","Deciduous",2,"Emily & Austin",7,"NE","Vascular",3,NA
+"68","9/12/18","Deciduous",2,"Emily & Austin",7,"NE","Litter Depth",12,NA
+"69","9/12/18","Deciduous",2,"Abby, Donovan & Jackie",8,"NE","Bare",45,NA
+"70","9/12/18","Deciduous",2,"Abby, Donovan & Jackie",8,"NE","Bryophytes",50,NA
+"71","9/12/18","Deciduous",2,"Abby, Donovan & Jackie",8,"NE","Vascular",5,NA
+"72","9/12/18","Deciduous",2,"Abby, Donovan & Jackie",8,"NE","Litter Depth",8,NA
+"73","9/12/18","Deciduous",2,"Emily & Austin",9,"NE","Bare",0,NA
+"74","9/12/18","Deciduous",2,"Emily & Austin",9,"NE","Bryophytes",25,NA
+"75","9/12/18","Deciduous",2,"Emily & Austin",9,"NE","Vascular",75,NA
+"76","9/12/18","Deciduous",2,"Emily & Austin",9,"NE","Litter Depth",9,NA
+"77","9/12/18","Deciduous",2,"Abby, Donovan & Jackie",10,"SE","Bare",0,NA
+"78","9/12/18","Deciduous",2,"Abby, Donovan & Jackie",10,"SE","Bryophytes",95,NA
+"79","9/12/18","Deciduous",2,"Abby, Donovan & Jackie",10,"SE","Vascular",5,NA
+"80","9/12/18","Deciduous",2,"Abby, Donovan & Jackie",10,"SE","Litter Depth",9,NA
+"81","9/5/18","Hemlock",1,"Brittany, Grace & Abi",1,"NW","Bare",85,NA
+"82","9/5/18","Hemlock",1,"Brittany, Grace & Abi",1,"NW","Bryophytes",0,NA
+"83","9/5/18","Hemlock",1,"Brittany, Grace & Abi",1,"NW","Vascular",15,NA
+"84","9/5/18","Hemlock",1,"Brittany, Grace & Abi",1,"NW","Litter Depth",4,NA
+"85","9/5/18","Hemlock",1,"Brittany, Grace & Abi",2,"NE","Bare",0,NA
+"86","9/5/18","Hemlock",1,"Brittany, Grace & Abi",2,"NE","Bryophytes",100,NA
+"87","9/5/18","Hemlock",1,"Brittany, Grace & Abi",2,"NE","Vascular",0,NA
+"88","9/5/18","Hemlock",1,"Brittany, Grace & Abi",2,"NE","Litter Depth",5,NA
+"89","9/5/18","Hemlock",1,"Brittany, Grace & Abi",3,"SW","Bare",30,NA
+"90","9/5/18","Hemlock",1,"Brittany, Grace & Abi",3,"SW","Bryophytes",60,NA
+"91","9/5/18","Hemlock",1,"Brittany, Grace & Abi",3,"SW","Vascular",10,NA
+"92","9/5/18","Hemlock",1,"Brittany, Grace & Abi",3,"SW","Litter Depth",3,NA
+"93","9/5/18","Hemlock",1,"Brittany, Grace & Abi",4,"NE","Bare",68,NA
+"94","9/5/18","Hemlock",1,"Brittany, Grace & Abi",4,"NE","Bryophytes",30,NA
+"95","9/5/18","Hemlock",1,"Brittany, Grace & Abi",4,"NE","Vascular",2,NA
+"96","9/5/18","Hemlock",1,"Brittany, Grace & Abi",4,"NE","Litter Depth",1,NA
+"97","9/5/18","Hemlock",1,"Brittany, Grace & Abi",5,"SE","Bare",80,NA
+"98","9/5/18","Hemlock",1,"Brittany, Grace & Abi",5,"SE","Bryophytes",20,NA
+"99","9/5/18","Hemlock",1,"Brittany, Grace & Abi",5,"SE","Vascular",0,NA
+"100","9/5/18","Hemlock",1,"Brittany, Grace & Abi",5,"SE","Litter Depth",3,NA
+"101","9/5/18","Hemlock",1,"Brittany, Grace & Abi",6,"SE","Bare",95,NA
+"102","9/5/18","Hemlock",1,"Brittany, Grace & Abi",6,"SE","Bryophytes",5,NA
+"103","9/5/18","Hemlock",1,"Brittany, Grace & Abi",6,"SE","Vascular",0,NA
+"104","9/5/18","Hemlock",1,"Brittany, Grace & Abi",6,"SE","Litter Depth",1,NA
+"105","9/5/18","Hemlock",1,"Brittany, Grace & Abi",7,"NW","Bare",90,NA
+"106","9/5/18","Hemlock",1,"Brittany, Grace & Abi",7,"NW","Bryophytes",5,NA
+"107","9/5/18","Hemlock",1,"Brittany, Grace & Abi",7,"NW","Vascular",5,NA
+"108","9/5/18","Hemlock",1,"Brittany, Grace & Abi",7,"NW","Litter Depth",2,NA
+"109","9/5/18","Hemlock",1,"Brittany, Grace & Abi",8,"NE","Bare",98,NA
+"110","9/5/18","Hemlock",1,"Brittany, Grace & Abi",8,"NE","Bryophytes",0,NA
+"111","9/5/18","Hemlock",1,"Brittany, Grace & Abi",8,"NE","Vascular",2,NA
+"112","9/5/18","Hemlock",1,"Brittany, Grace & Abi",8,"NE","Litter Depth",2,NA
+"113","9/5/18","Hemlock",1,"Brittany, Grace & Abi",9,"NW","Bare",95,NA
+"114","9/5/18","Hemlock",1,"Brittany, Grace & Abi",9,"NW","Bryophytes",0,NA
+"115","9/5/18","Hemlock",1,"Brittany, Grace & Abi",9,"NW","Vascular",5,NA
+"116","9/5/18","Hemlock",1,"Brittany, Grace & Abi",9,"NW","Litter Depth",2,NA
+"117","9/5/18","Hemlock",1,"Brittany, Grace & Abi",10,"SE","Bare",100,NA
+"118","9/5/18","Hemlock",1,"Brittany, Grace & Abi",10,"SE","Bryophytes",0,NA
+"119","9/5/18","Hemlock",1,"Brittany, Grace & Abi",10,"SE","Vascular",0,NA
+"120","9/5/18","Hemlock",1,"Brittany, Grace & Abi",10,"SE","Litter Depth",3,NA
+"121","9/5/18","Pine",1,"Shyanne, Rachel & Holly",1,"NE","Bare",95,NA
+"122","9/5/18","Pine",1,"Shyanne, Rachel & Holly",1,"NE","Bryophytes",0,NA
+"123","9/5/18","Pine",1,"Shyanne, Rachel & Holly",1,"NE","Vascular",5,NA
+"124","9/5/18","Pine",1,"Shyanne, Rachel & Holly",1,"NE","Litter Depth",3,"cm"
+"125","9/5/18","Pine",1,"Shyanne, Rachel & Holly",2,"SW","Bare",80,NA
+"126","9/5/18","Pine",1,"Shyanne, Rachel & Holly",2,"SW","Bryophytes",0,NA
+"127","9/5/18","Pine",1,"Shyanne, Rachel & Holly",2,"SW","Vascular",20,NA
+"128","9/5/18","Pine",1,"Shyanne, Rachel & Holly",2,"SW","Litter Depth",3,NA
+"129","9/5/18","Pine",1,"Shyanne, Rachel & Holly",3,"NE","Bare",60,NA
+"130","9/5/18","Pine",1,"Shyanne, Rachel & Holly",3,"NE","Bryophytes",0,NA
+"131","9/5/18","Pine",1,"Shyanne, Rachel & Holly",3,"NE","Vascular",40,NA
+"132","9/5/18","Pine",1,"Shyanne, Rachel & Holly",3,"NE","Litter Depth",5,NA
+"133","9/5/18","Pine",1,"Shyanne, Rachel & Holly",4,"NW","Bare",20,NA
+"134","9/5/18","Pine",1,"Shyanne, Rachel & Holly",4,"NW","Bryophytes",30,NA
+"135","9/5/18","Pine",1,"Shyanne, Rachel & Holly",4,"NW","Vascular",50,NA
+"136","9/5/18","Pine",1,"Shyanne, Rachel & Holly",4,"NW","Litter Depth",5,NA
+"137","9/5/18","Pine",1,"Shyanne, Rachel & Holly",5,"SE","Bare",100,NA
+"138","9/5/18","Pine",1,"Shyanne, Rachel & Holly",5,"SE","Bryophytes",0,NA
+"139","9/5/18","Pine",1,"Shyanne, Rachel & Holly",5,"SE","Vascular",0,NA
+"140","9/5/18","Pine",1,"Shyanne, Rachel & Holly",5,"SE","Litter Depth",4,NA
+"141","9/5/18","Pine",1,"Shyanne, Rachel & Holly",6,"NW","Bare",95,NA
+"142","9/5/18","Pine",1,"Shyanne, Rachel & Holly",6,"NW","Bryophytes",0,NA
+"143","9/5/18","Pine",1,"Shyanne, Rachel & Holly",6,"NW","Vascular",5,NA
+"144","9/5/18","Pine",1,"Shyanne, Rachel & Holly",6,"NW","Litter Depth",4,NA
+"145","9/5/18","Pine",1,"Shyanne, Rachel & Holly",7,"SW","Bare",100,NA
+"146","9/5/18","Pine",1,"Shyanne, Rachel & Holly",7,"SW","Bryophytes",0,NA
+"147","9/5/18","Pine",1,"Shyanne, Rachel & Holly",7,"SW","Vascular",0,NA
+"148","9/5/18","Pine",1,"Shyanne, Rachel & Holly",7,"SW","Litter Depth",3,NA
+"149","9/5/18","Pine",1,"Shyanne, Rachel & Holly",8,"NE","Bare",75,NA
+"150","9/5/18","Pine",1,"Shyanne, Rachel & Holly",8,"NE","Bryophytes",0,NA
+"151","9/5/18","Pine",1,"Shyanne, Rachel & Holly",8,"NE","Vascular",25,NA
+"152","9/5/18","Pine",1,"Shyanne, Rachel & Holly",8,"NE","Litter Depth",2,NA
+"153","9/5/18","Pine",1,"Shyanne, Rachel & Holly",9,"SW","Bare",30,NA
+"154","9/5/18","Pine",1,"Shyanne, Rachel & Holly",9,"SW","Bryophytes",10,NA
+"155","9/5/18","Pine",1,"Shyanne, Rachel & Holly",9,"SW","Vascular",60,NA
+"156","9/5/18","Pine",1,"Shyanne, Rachel & Holly",9,"SW","Litter Depth",2,NA
+"157","9/5/18","Pine",1,"Shyanne, Rachel & Holly",10,"SE","Bare",85,NA
+"158","9/5/18","Pine",1,"Shyanne, Rachel & Holly",10,"SE","Bryophytes",5,NA
+"159","9/5/18","Pine",1,"Shyanne, Rachel & Holly",10,"SE","Vascular",10,NA
+"160","9/5/18","Pine",1,"Shyanne, Rachel & Holly",10,"SE","Litter Depth",2,NA
+"161","9/5/18","Pine",2,"Emma & Shannon",1,"SW","Bare",80,NA
+"162","9/5/18","Pine",2,"Emma & Shannon",1,"SW","Bryophytes",0,NA
+"163","9/5/18","Pine",2,"Emma & Shannon",1,"SW","Vascular",20,NA
+"164","9/5/18","Pine",2,"Emma & Shannon",1,"SW","Litter Depth",4,NA
+"165","9/5/18","Pine",2,"Emma & Shannon",2,"NE","Bare",60,NA
+"166","9/5/18","Pine",2,"Emma & Shannon",2,"NE","Bryophytes",10,NA
+"167","9/5/18","Pine",2,"Emma & Shannon",2,"NE","Vascular",30,NA
+"168","9/5/18","Pine",2,"Emma & Shannon",2,"NE","Litter Depth",6,NA
+"169","9/5/18","Pine",2,"Emma & Shannon",3,"NE","Bare",95,NA
+"170","9/5/18","Pine",2,"Emma & Shannon",3,"NE","Bryophytes",0,NA
+"171","9/5/18","Pine",2,"Emma & Shannon",3,"NE","Vascular",5,NA
+"172","9/5/18","Pine",2,"Emma & Shannon",3,"NE","Litter Depth",3,NA
+"173","9/5/18","Pine",2,"Emma & Shannon",4,"NW","Bare",80,NA
+"174","9/5/18","Pine",2,"Emma & Shannon",4,"NW","Bryophytes",0,NA
+"175","9/5/18","Pine",2,"Emma & Shannon",4,"NW","Vascular",20,NA
+"176","9/5/18","Pine",2,"Emma & Shannon",4,"NW","Litter Depth",3,NA
+"177","9/5/18","Pine",2,"Emma & Shannon",5,"NW","Bare",70,NA
+"178","9/5/18","Pine",2,"Emma & Shannon",5,"NW","Bryophytes",10,NA
+"179","9/5/18","Pine",2,"Emma & Shannon",5,"NW","Vascular",20,NA
+"180","9/5/18","Pine",2,"Emma & Shannon",5,"NW","Litter Depth",4,NA
+"181","9/5/18","Pine",2,"Emma & Shannon",6,"SW","Bare",90,NA
+"182","9/5/18","Pine",2,"Emma & Shannon",6,"SW","Bryophytes",0,NA
+"183","9/5/18","Pine",2,"Emma & Shannon",6,"SW","Vascular",10,NA
+"184","9/5/18","Pine",2,"Emma & Shannon",6,"SW","Litter Depth",4,NA
+"185","9/5/18","Pine",2,"Emma & Shannon",7,"SE","Bare",50,NA
+"186","9/5/18","Pine",2,"Emma & Shannon",7,"SE","Bryophytes",0,NA
+"187","9/5/18","Pine",2,"Emma & Shannon",7,"SE","Vascular",50,NA
+"188","9/5/18","Pine",2,"Emma & Shannon",7,"SE","Litter Depth",5,NA
+"189","9/5/18","Pine",2,"Emma & Shannon",8,"SW","Bare",70,NA
+"190","9/5/18","Pine",2,"Emma & Shannon",8,"SW","Bryophytes",0,NA
+"191","9/5/18","Pine",2,"Emma & Shannon",8,"SW","Vascular",30,NA
+"192","9/5/18","Pine",2,"Emma & Shannon",8,"SW","Litter Depth",5,NA
+"193","9/5/18","Pine",2,"Emma & Shannon",9,"NW","Bare",50,NA
+"194","9/5/18","Pine",2,"Emma & Shannon",9,"NW","Bryophytes",0,NA
+"195","9/5/18","Pine",2,"Emma & Shannon",9,"NW","Vascular",50,NA
+"196","9/5/18","Pine",2,"Emma & Shannon",9,"NW","Litter Depth",2,NA
+"197","9/5/18","Pine",2,"Emma & Shannon",10,"SE","Bare",50,NA
+"198","9/5/18","Pine",2,"Emma & Shannon",10,"SE","Bryophytes",0,NA
+"199","9/5/18","Pine",2,"Emma & Shannon",10,"SE","Vascular",50,NA
+"200","9/5/18","Pine",2,"Emma & Shannon",10,"SE","Litter Depth",2,NA
+"201","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",1,"NW","Bare",40,NA
+"202","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",1,"NW","Bryophytes",10,NA
+"203","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",1,"NW","Vascular",50,NA
+"204","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",1,"NW","Litter Depth",2,NA
+"205","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",2,"NW","Bare",5,NA
+"206","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",2,"NW","Bryophytes",0,NA
+"207","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",2,"NW","Vascular",95,NA
+"208","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",2,"NW","Litter Depth",1,NA
+"209","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",3,"NE","Bare",95,NA
+"210","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",3,"NE","Bryophytes",0,NA
+"211","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",3,"NE","Vascular",5,NA
+"212","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",3,"NE","Litter Depth",2,NA
+"213","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",4,"SE","Bare",95,NA
+"214","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",4,"SE","Bryophytes",0,NA
+"215","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",4,"SE","Vascular",5,NA
+"216","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",4,"SE","Litter Depth",1,NA
+"217","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",5,"SE","Bare",25,NA
+"218","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",5,"SE","Bryophytes",25,NA
+"219","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",5,"SE","Vascular",50,NA
+"220","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",5,"SE","Litter Depth",2,NA
+"221","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",6,"SW","Bare",5,NA
+"222","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",6,"SW","Bryophytes",90,NA
+"223","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",6,"SW","Vascular",5,NA
+"224","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",6,"SW","Litter Depth",3,NA
+"225","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",7,"NW","Bare",50,NA
+"226","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",7,"NW","Bryophytes",45,NA
+"227","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",7,"NW","Vascular",5,NA
+"228","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",7,"NW","Litter Depth",2,NA
+"229","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",8,"SW","Bare",65,NA
+"230","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",8,"SW","Bryophytes",25,NA
+"231","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",8,"SW","Vascular",10,NA
+"232","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",8,"SW","Litter Depth",2,NA
+"233","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",9,"NE","Bare",90,NA
+"234","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",9,"NE","Bryophytes",0,NA
+"235","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",9,"NE","Vascular",10,NA
+"236","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",9,"NE","Litter Depth",1,NA
+"237","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",10,"NE","Bare",90,NA
+"238","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",10,"NE","Bryophytes",5,NA
+"239","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",10,"NE","Vascular",5,NA
+"240","9/5/18","Hemlock",2,"Abby, Donovan & Jackie",10,"NE","Litter Depth",1,NA

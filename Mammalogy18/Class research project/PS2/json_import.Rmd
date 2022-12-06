@@ -1,0 +1,65 @@
+---
+title: "Testing json files"
+output: html_notebook
+---
+### Overview
+Zooniverse projects provide classification data in a .csv file that is in 
+JSON format.  Thus, to access the data in R for analysis, we need to be able
+to import the JSON format data.  This notebook has some experiments to that end.
+
+I downloaded a classification from the Mammalogy 2018 project on zooniverse. The file is saved in this project folder.  That is the csv file we'll use.
+
+#### Step 1. Set up workspace
+```{r}
+rm(list = ls()) #clear workspace
+library(jsonlite) #turn on jsonlite package - needs to be installed
+library(dplyr)
+library(ggplot2)
+```
+#### Step 2. Import file.
+
+```{r}
+library(readr)
+DF <- read_csv("main-workflow-classifications.csv")
+```
+You can see that three columns, called "metadata", "annotations" and "subject_data" contain much more information and in fact could be data frames of information themselves.  Try using jsonlite to parse.
+
+#### Step 3. Experiment with jsonlite package
+Let's see if we can convert the metadata column into a new DF called "Meta"
+```{r}
+Meta1<-fromJSON(DF$metadata, simplifyDataFrame = T)
+```
+Getting error message:
+
+> Error: parse error: trailing garbage...
+
+Checked [this website](https://stackoverflow.com/questions/38858345/parse-error-trailing-garbage-while-trying-to-parse-json-column-in-data-frame) on stack overflow for suggestions. 
+
+Now try one of the solutions there:
+```{r}
+Meta1<-jsonlite::stream_in(textConnection(gsub("\\n", "", DF$metadata)))
+```
+Worked!  Now try for other 2 columns:
+```{r}
+annotations<-jsonlite::stream_in(textConnection(gsub("\\n", "", DF$annotations)))
+
+subjects<-jsonlite::stream_in(textConnection(gsub("\\n", "", DF$subject_data)))
+```
+
+Worked fine for subjects (which tell the image numbers, etc.) but only got one row for annotations.  Let's see what the problem is there (it is the most important column identifying what animal is in each picture!)
+
+First, let's see what the code is actually doing:
+
+From the jsonlite user guide:
+stream_in description:
+> The stream_in and stream_out functions implment line-by-line processing of JSON data over a connection, such as a socket, url, file or pipe.  JSON streaming requires the ndjson format, which is slightly differs from the fromJSON and toJSON format.
+
+So, maybe I need to reformat?
+
+From [this webpage about ndjson](http://ndjson.org/) I see that the line separator is \'\\n\'\ so let's change the code to match:
+```{r}
+annotations<-jsonlite::stream_in(textConnection(gsub('\n', "", DF$annotations)))
+
+```
+Nope - still not working.  Next, look at how the columns differ in structure within the .csv.
+

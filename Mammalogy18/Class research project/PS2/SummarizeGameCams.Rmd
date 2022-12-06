@@ -1,0 +1,57 @@
+---
+title: "Summarizing Game Camera Data"
+output: html_notebook
+---
+
+After a LOT of work processing data from the zooniverse, we end up with a file called
+final_test_results.csv that contains the species IDs, habitat, transect, and the number of folks who assigned each species. We'll use this to get some summary information.
+
+Set up the workspace and read in data
+```{r}
+rm(list = ls())
+library(readr)
+library(dplyr)
+library(ggplot2)
+DF <- read_csv("final_test_results.csv")
+```
+
+Now summarize list of species by subject id, transect and habitat
+```{r}
+newDF<-DF %>% group_by(subject_ids, transect, habitat, choice) %>% summarize(
+	num_species=n_distinct(choice)
+)
+```
+Now summarize to get frequency for each species on each transect
+
+```{R}
+SpeciesSum<-newDF %>% group_by(transect, habitat, choice) %>% summarize(
+	number_species = n_distinct(choice),
+	num_critters = sum(num_species, na.rm = T)
+)
+```
+SpeciesSum is a good data frame for summarized but "raw" data
+
+```{R}
+write.csv(SpeciesSum, "summary_by_transect.csv")
+```
+Now summarize by habitat
+```{r}
+SpecByTransect <-SpeciesSum %>% group_by(habitat, transect, choice) %>% summarize(
+	total = sum(num_critters, na.rm = T)
+)
+SpecByHabitat<-SpeciesSum %>% group_by(habitat, choice) %>% summarize(
+	total = sum(num_critters, na.rm = T)
+)
+```
+Now figure out the total number of species and individuals by transect
+```{r}
+ByTransect<-SpecByTransect%>%group_by(transect, habitat) %>% summarize(
+	num_species = n_distinct(choice),
+	total_individuals = sum(total, na.rm = T)
+)
+```
+SpeciesByTransect has the main data I need for determining SR, Simpson's index
+```{r}
+write.csv(SpecByTransect, "SpeciesByTransect")
+```
+Now use these data elsewhere.
