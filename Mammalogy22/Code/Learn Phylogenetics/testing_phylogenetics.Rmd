@@ -24,21 +24,79 @@ Particularly this article [A workflow with R: Phylogenetic analyses and visualiz
 # Get started
 Set up the workspace and install required packages
 
-```{r}
+```{r, message=FALSE}
 rm(list =ls())
 require(pacman) #turns on pacman, a package management package
 library(tidyverse)
-p_load(msa)#checks to see if msa is installed, loads if true, installs and loads if false
+library(here)
 ```
 
 ## Install `msa` package
 The `msa` package is distributed by [Bioconductor](http://www.bioconductor.org/). According to Toparsian et al., msa "is a unified R/Bioconductor interface and implements three multiple sequence alignment methods (ClustalW, ClustalOmega and MUSCLE). They do not need any other external software tools because they are all integrated in the package. Sequence types that this package can read for alignment are "B", "DNA", "RNA" or "AA" that is a single string specifying the type of sequences contained in the FASTA format file (.fa, .fas, or .fasta) or fastaq file. The readDNAStringSet() function and its family: readBStringSet(), readRNAStringSet(), readAAStringSet() load sequences from an input file (or multiple input files) into an XStringSet object. Results are stored as objects provided by the Biostrings package. Therefore, multiple sequence alignment process is inherited from the Biostrings package."
 
-```{r}
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+This package is a pain to install. Try installing from github by running the following code
 
-BiocManager::install("msa")
+`library(devtools)
+devtools::install_github("UBod/msa")`
+
+```{r, message=FALSE}
+library(msa)
 ```
+## Other packages
+ There are a number of other packages whose installation seems to be stragitforward at the time of this writing. Install them and then turn them on
+```{r, message = FALSE}
+#install.packages(c("bios2mds", "adegenet","ape", "ggtree", "haplotypes", "pegas"))
+library(rgl)#requires XQuartz be installed on mac
+library(bios2mds)
+library(adegenet)
+library(ape)
+library(ggtree) #may need to install from github
+library(haplotypes)
+library(pegas)
+library(Biostrings)
+```
+ 
+## Work with the sample genetic data
+The sample fasta file that was used by Toparsian et al. is saved as "Bombus_sample.fas" in the Data folder (Data --> Phylogenetics --> Bombus_sample.fas)
+ 
+It contains mitochondrial cyt b sequences (373bp) from 120 *Bombus terrestris dalmatinus* belonging to 8 different populations. 
+
+The .fas file is structured as a text file alternating lines between identifying the sample (one line)
+followed by the sample DNA sequence (next line) for all of the samples.
+### Load the data
+Use a function from the `Biostrings` package to load the .fas file.
+```{r}
+bees<-readDNAStringSet(here("Mammalogy22", "Data", "Phylogenetics", "Bombus_sample.fas"))
+```
+
+### Align the samples
+Now we need to do an alignment. If you have data that are in a .fas format that have already been aligned, you can skip this step.
+
+In this example, we use the `msa()` function from the `msa` package to align the samples to the same length via the ClustalW algorightm
+
+```{r}
+cb<-msa(bees) #multiple seequence alignment from msa package
+cb
+```
+
+ Now convert the aligned file to .fas format.
+ 
+```{r}
+bees_aligned<-msaConvert(cb, type = c("bios2mds::align"))
+```
+ 
+ And now export
+```{r}
+library(bios2mds)
+export.fasta(bees_aligned, outfile="bees_aligned.fas", ncol(cb), open = "w")
+```
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  

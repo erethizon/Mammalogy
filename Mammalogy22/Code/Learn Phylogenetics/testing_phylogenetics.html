@@ -299,23 +299,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -363,9 +357,15 @@ display: none;
 </div>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>Resources for learning</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>I would like to build out some methods for demonstrating/letting
+students play with modern molecular phylogenetics applications in
+mammalogy. Here I will build a workflow, which then might be fun to
+eventually build into a shiny app.</p>
+<div id="resources-for-learning" class="section level2">
+<h2>Resources for learning</h2>
+<p>Here are some of the links I used for building this code</p>
 <p><a href="https://bios1140.github.io/">BIOS1140 University of
 Oslo</a></p>
 <p><a href="https://academic.oup.com/bioinformatics/article/27/4/592/198887?login=true">panghorn:phylotgenetic
@@ -373,6 +373,60 @@ annalysis in R article</a></p>
 <p>Particularly this article <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0243927">A
 workflow with R: Phylogenetic analyses and visualizations using
 mitochondrial cytochrome b gene sequences</a></p>
+</div>
+</div>
+<div id="get-started" class="section level1">
+<h1>Get started</h1>
+<p>Set up the workspace and install required packages</p>
+<pre class="r"><code>rm(list =ls())
+require(pacman) #turns on pacman, a package management package
+library(tidyverse)
+library(here)</code></pre>
+<div id="install-msa-package" class="section level2">
+<h2>Install <code>msa</code> package</h2>
+<p>The <code>msa</code> package is distributed by <a href="http://www.bioconductor.org/">Bioconductor</a>. According to
+Toparsian et al., msa “is a unified R/Bioconductor interface and
+implements three multiple sequence alignment methods (ClustalW,
+ClustalOmega and MUSCLE). They do not need any other external software
+tools because they are all integrated in the package. Sequence types
+that this package can read for alignment are”B”, “DNA”, “RNA” or “AA”
+that is a single string specifying the type of sequences contained in
+the FASTA format file (.fa, .fas, or .fasta) or fastaq file. The
+readDNAStringSet() function and its family: readBStringSet(),
+readRNAStringSet(), readAAStringSet() load sequences from an input file
+(or multiple input files) into an XStringSet object. Results are stored
+as objects provided by the Biostrings package. Therefore, multiple
+sequence alignment process is inherited from the Biostrings
+package.”</p>
+<p>This package is a pain to install. Try installing from github by
+running the following code</p>
+<p><code>library(devtools) devtools::install_github(&quot;UBod/msa&quot;)</code></p>
+<pre class="r"><code>library(msa)</code></pre>
+</div>
+<div id="other-packages" class="section level2">
+<h2>Other packages</h2>
+<p>There are a number of other packages whose installation seems to be
+stragitforward at the time of this writing. Install them and then turn
+them on</p>
+<pre class="r"><code>#install.packages(c(&quot;bios2mds&quot;, &quot;adegenet&quot;,&quot;ape&quot;, &quot;ggtree&quot;, &quot;haplotypes&quot;, &quot;pegas&quot;))
+library(rgl)#requires XQuartz be installed on mac</code></pre>
+<pre><code>## Warning in rgl.init(initValue, onlyNULL): RGL: unable to open X11 display</code></pre>
+<pre><code>## Warning: &#39;rgl.init&#39; failed, running with &#39;rgl.useNULL = TRUE&#39;.</code></pre>
+<pre class="r"><code>library(bios2mds)
+library(adegenet)
+library(ape)
+library(ggtree) #may need to install from github
+library(haplotypes)
+library(pegas)</code></pre>
+</div>
+<div id="read-in-the-genetic-data" class="section level2">
+<h2>Read in the genetic data</h2>
+<p>The sample fasta file that was used by Toparsian et al. is saved as
+“Bombus_sample.fas” in the Data folder (Data –&gt; Phylogenetics –&gt;
+Bombus_sample.fas)</p>
+<p>It contains mitochondrial cyt b sequences (373bp) from 120 <em>Bombus
+terrestris dalmatinus</em> belonging to 8 different populations.</p>
+</div>
 </div>
 
 
